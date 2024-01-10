@@ -1,8 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { FavoriteActivity } from '../types/favoriteActivities';
 
 @Schema({ timestamps: true })
 export class User extends Document {
+  constructor() {
+    super();
+    this.favoriteActivities = [];
+  }
+
   @Prop({ required: true })
   firstName!: string;
 
@@ -17,6 +23,9 @@ export class User extends Document {
 
   @Prop()
   token?: string;
+
+  @Prop({ required: true, default: [] })
+  favoriteActivities: FavoriteActivity[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

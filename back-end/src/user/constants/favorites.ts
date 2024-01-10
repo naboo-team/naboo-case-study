@@ -1,0 +1,1 @@
+export const FAVORITE_POSITION_STEP = 1_000;

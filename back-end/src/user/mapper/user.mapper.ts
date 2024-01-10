@@ -5,8 +5,6 @@ import { UserDto } from '../types/user.dto';
 
 @Injectable()
 export class UserMapper implements Mapper<User, UserDto> {
-  constructor() {}
-
   convert(user: User): UserDto {
     return {
       id: user._id,
