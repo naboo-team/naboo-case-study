@@ -33,11 +33,16 @@ export type CreateActivityInput = {
   price: Scalars['Int']['input'];
 };
 
+export type MarkActivityAsFavoriteInput = {
+  activityId: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createActivity: ActivityDto;
   login: SignInDto;
   logout: Scalars['Boolean']['output'];
+  markActivityAsFavorite: Scalars['Boolean']['output'];
   register: UserDto;
 };
 
@@ -49,6 +54,11 @@ export type MutationCreateActivityArgs = {
 
 export type MutationLoginArgs = {
   signInInput: SignInInput;
+};
+
+
+export type MutationMarkActivityAsFavoriteArgs = {
+  markActivityAsFavoriteInput: MarkActivityAsFavoriteInput;
 };
 
 
@@ -115,6 +125,13 @@ export type CreateActivityMutationVariables = Exact<{
 
 
 export type CreateActivityMutation = { __typename?: 'Mutation', createActivity: { __typename?: 'ActivityDto', id: string, city: string, description: string, name: string, price: number, owner: { __typename?: 'UserDto', firstName: string, lastName: string } } };
+
+export type MarkActivityAsFavoriteMutationVariables = Exact<{
+  markActivityAsFavoriteInput: MarkActivityAsFavoriteInput;
+}>;
+
+
+export type MarkActivityAsFavoriteMutation = { __typename?: 'Mutation', markActivityAsFavorite: boolean };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -256,6 +273,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateActivityInput: CreateActivityInput;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  MarkActivityAsFavoriteInput: MarkActivityAsFavoriteInput;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   SignInDto: ResolverTypeWrapper<SignInDto>;
@@ -271,6 +289,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   CreateActivityInput: CreateActivityInput;
   Int: Scalars['Int']['output'];
+  MarkActivityAsFavoriteInput: MarkActivityAsFavoriteInput;
   Mutation: {};
   Query: {};
   SignInDto: SignInDto;
@@ -294,6 +313,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createActivity?: Resolver<ResolversTypes['ActivityDto'], ParentType, ContextType, RequireFields<MutationCreateActivityArgs, 'createActivityInput'>>;
   login?: Resolver<ResolversTypes['SignInDto'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'signInInput'>>;
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  markActivityAsFavorite?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationMarkActivityAsFavoriteArgs, 'markActivityAsFavoriteInput'>>;
   register?: Resolver<ResolversTypes['UserDto'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'signUpInput'>>;
 };
 

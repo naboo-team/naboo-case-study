@@ -3,12 +3,17 @@ import { graphqlClient } from "@/graphql/apollo";
 import {
   GetActivityQuery,
   GetActivityQueryVariables,
+  MarkActivityAsFavoriteMutation,
+  MarkActivityAsFavoriteMutationVariables,
 } from "@/graphql/generated/types";
+import MarkActivityAsFavorite from "@/graphql/mutations/activity/markActivityAsFavorite";
 import GetActivity from "@/graphql/queries/activity/getActivity";
-import { Badge, Flex, Grid, Group, Image, Text } from "@mantine/core";
+import { useMutation } from "@apollo/client";
+import { Badge, Button, Flex, Grid, Group, Image, Text } from "@mantine/core";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useCallback } from "react";
 
 interface ActivityDetailsProps {
   activity: GetActivityQuery["getActivity"];
@@ -30,6 +35,28 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function ActivityDetails({ activity }: ActivityDetailsProps) {
   const router = useRouter();
+
+  const [markActivityAsFavorite] = useMutation<
+    MarkActivityAsFavoriteMutation,
+    MarkActivityAsFavoriteMutationVariables
+  >(MarkActivityAsFavorite);
+
+  const markAsFavorite = useCallback(() => {
+    markActivityAsFavorite({
+      variables: {
+        markActivityAsFavoriteInput: {
+          activityId: activity.id,
+        },
+      },
+    })
+      .then(() => {
+        router.push("/profil");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [activity.id, markActivityAsFavorite, router]);
+
   return (
     <>
       <Head>
@@ -48,6 +75,7 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
         </Grid.Col>
         <Grid.Col span={5}>
           <Flex direction="column" gap="md">
+            <Button onClick={markAsFavorite}>Favorite</Button>
             <Group mt="md" mb="xs">
               <Badge color="pink" variant="light">
                 {activity.city}
