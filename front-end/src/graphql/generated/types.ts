@@ -65,6 +65,7 @@ export type Query = {
   getCities: Array<Scalars['String']['output']>;
   getLatestActivities: Array<ActivityDto>;
   getMe: UserDto;
+  getUserFavoriteActivities: Array<ActivityDto>;
 };
 
 
@@ -154,6 +155,11 @@ export type GetActivityQueryVariables = Exact<{
 
 
 export type GetActivityQuery = { __typename?: 'Query', getActivity: { __typename?: 'ActivityDto', id: string, city: string, description: string, name: string, price: number, owner: { __typename?: 'UserDto', firstName: string, lastName: string } } };
+
+export type GetUserFavoriteActivitiesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserFavoriteActivitiesQuery = { __typename?: 'Query', getUserFavoriteActivities: Array<{ __typename?: 'ActivityDto', id: string, city: string, description: string, name: string, price: number, owner: { __typename?: 'UserDto', firstName: string, lastName: string } }> };
 
 export type GetLatestActivitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -299,6 +305,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getCities?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   getLatestActivities?: Resolver<Array<ResolversTypes['ActivityDto']>, ParentType, ContextType>;
   getMe?: Resolver<ResolversTypes['UserDto'], ParentType, ContextType>;
+  getUserFavoriteActivities?: Resolver<Array<ResolversTypes['ActivityDto']>, ParentType, ContextType>;
 };
 
 export type SignInDtoResolvers<ContextType = any, ParentType extends ResolversParentTypes['SignInDto'] = ResolversParentTypes['SignInDto']> = {
