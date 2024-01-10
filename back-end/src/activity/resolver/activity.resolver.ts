@@ -2,14 +2,24 @@ import { Resolver, Query, Mutation, Args, Context, Int } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { ActivityService } from '../activity.service';
 import { ActivityMapper } from '../mapper/activity.mapper';
-import { ActivityDto, CreateActivityInput } from '../types';
+import {
+  ActivityDto,
+  CreateActivityInput,
+  MarkActivityAsFavoriteInput,
+} from '../types';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { UserService } from 'src/user/user.service';
+import { sortFavoriteActivities } from 'src/user/helpers/sortFavoriteActivities';
+import { UserDto } from 'src/user/types/user.dto';
+import { UserMapper } from 'src/user/mapper/user.mapper';
 
 @Resolver('Activity')
 export class ActivityResolver {
   constructor(
     private readonly activityService: ActivityService,
     private readonly activityMapper: ActivityMapper,
+    private readonly userServices: UserService,
+    private readonly userMapper: UserMapper,
   ) {}
 
   @Query(() => [ActivityDto])
@@ -29,6 +39,28 @@ export class ActivityResolver {
   async getActivitiesByUser(@Context() context: any): Promise<ActivityDto[]> {
     const activities = await this.activityService.findByUser(context.user!.id);
     return activities.map((activity) => this.activityMapper.convert(activity));
+  }
+
+  @Query(() => [ActivityDto])
+  @UseGuards(AuthGuard)
+  async getUserFavoriteActivities(
+    @Context() context: any,
+  ): Promise<ActivityDto[]> {
+    const user = await this.userServices.getById(context.user!.id);
+    const activityIds = user.favoriteActivities.map(
+      (favorite) => favorite.activityId,
+    );
+    const activities = await this.activityService.findByIds(activityIds);
+    return [...user.favoriteActivities]
+      .sort(sortFavoriteActivities)
+      .reduce((orderedFavoriteActivities, { activityId }) => {
+        const activity = activities.find(({ id }) => id === activityId);
+        if (activity) {
+          const activityDto = this.activityMapper.convert(activity);
+          orderedFavoriteActivities.push(activityDto);
+        }
+        return orderedFavoriteActivities;
+      }, [] as ActivityDto[]);
   }
 
   @Query(() => [String])
@@ -68,5 +100,26 @@ export class ActivityResolver {
       createActivityDto,
     );
     return this.activityMapper.convert(activity);
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(AuthGuard)
+  async markActivityAsFavorite(
+    @Context() context: any,
+    @Args('markActivityAsFavoriteInput')
+    markActivityAsFavoriteInput: MarkActivityAsFavoriteInput,
+  ): Promise<boolean> {
+    const activity = await this.activityService.findOne(
+      markActivityAsFavoriteInput.activityId,
+    );
+    if (!activity) {
+      throw new Error('Activity not found');
+    }
+    await this.userServices.addFavoriteActivity({
+      userId: context.user!.id,
+      activityId: markActivityAsFavoriteInput.activityId,
+    });
+
+    return true;
   }
 }

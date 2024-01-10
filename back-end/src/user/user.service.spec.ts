@@ -103,12 +103,12 @@ describe('UserService', () => {
       position: -1_000_000,
     });
 
-    const updatedUser = await service.addFavoriteActivity({
+    const result = await service.addFavoriteActivity({
       userId: user.id,
       activityId: activityIds[3],
     });
 
-    expect(updatedUser.favoriteActivities).toEqual([
+    expect(result.favoriteActivities).toEqual([
       {
         activityId: activityIds[0],
         position: expect.any(Number),
@@ -129,16 +129,16 @@ describe('UserService', () => {
     ]);
 
     // newly favorited activity should be at the top, so position should be less than the previous one
-    expect(updatedUser.favoriteActivities[3].position).toBeLessThan(
-      updatedUser.favoriteActivities[2].position,
+    expect(result.favoriteActivities[3].position).toBeLessThan(
+      result.favoriteActivities[2].position,
     );
 
-    const updatedUserPostRemoval = await service.removeFavoriteActivity({
+    const resultPostRemoval = await service.removeFavoriteActivity({
       userId: user.id,
       activityId: activityIds[1],
     });
 
-    expect(updatedUserPostRemoval.favoriteActivities).toEqual([
+    expect(resultPostRemoval.favoriteActivities).toEqual([
       {
         activityId: activityIds[0],
         position: expect.any(Number),

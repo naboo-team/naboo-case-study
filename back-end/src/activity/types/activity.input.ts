@@ -21,3 +21,10 @@ export class CreateActivityInput {
   @Min(1)
   price!: number;
 }
+
+@InputType()
+export class MarkActivityAsFavoriteInput {
+  @Field()
+  @IsNotEmpty()
+  activityId!: string;
+}

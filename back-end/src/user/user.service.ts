@@ -5,6 +5,7 @@ import { SignUpInput } from 'src/auth/types';
 import { User } from './schema/user.schema';
 import { FAVORITE_POSITION_STEP } from './constants/favorites';
 import { sortFavoriteActivities } from './helpers/sortFavoriteActivities';
+import { FavoriteActivity } from './types/favoriteActivities';
 
 @Injectable()
 export class UserService {
@@ -59,7 +60,7 @@ export class UserService {
   }: {
     userId: string;
     activityId: string;
-    position?: number;
+    position?: number | null;
   }): Promise<User> {
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
@@ -75,7 +76,8 @@ export class UserService {
       position: position ?? firstPosition - FAVORITE_POSITION_STEP,
     };
     user.favoriteActivities.push(favoriteActivity);
-    return user.save();
+    await user.save();
+    return user;
   }
 
   async removeFavoriteActivity({
@@ -95,6 +97,7 @@ export class UserService {
     );
 
     user.favoriteActivities = filteredFavorites;
-    return user.save();
+    await user.save();
+    return user;
   }
 }

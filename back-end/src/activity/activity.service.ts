@@ -45,6 +45,13 @@ export class ActivityService {
     return activity;
   }
 
+  async findByIds(ids: string[]): Promise<Activity[]> {
+    return this.activityModel
+      .find({ _id: { $in: ids } })
+      .populate('owner')
+      .exec();
+  }
+
   async create(userId: string, data: CreateActivityInput): Promise<Activity> {
     const activity = await this.activityModel.create({
       ...data,
