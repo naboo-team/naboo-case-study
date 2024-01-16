@@ -20,6 +20,7 @@ import {
   MarkActivityAsFavoriteInput,
 } from './activity.inputs.dto';
 import { User } from 'src/user/user.schema';
+import { ContextWithJWTPayload } from 'src/auth/types/context';
 
 @Resolver(() => Activity)
 export class ActivityResolver {
@@ -51,8 +52,10 @@ export class ActivityResolver {
 
   @Query(() => [Activity])
   @UseGuards(AuthGuard)
-  async getActivitiesByUser(@Context() context: any): Promise<Activity[]> {
-    return this.activityService.findByUser(context.user!.id);
+  async getActivitiesByUser(
+    @Context() context: ContextWithJWTPayload,
+  ): Promise<Activity[]> {
+    return this.activityService.findByUser(context.jwtPayload.id);
   }
 
   @Query(() => [String])
@@ -78,16 +81,16 @@ export class ActivityResolver {
   @Mutation(() => Activity)
   @UseGuards(AuthGuard)
   async createActivity(
-    @Context() context: any,
+    @Context() context: ContextWithJWTPayload,
     @Args('createActivityInput') createActivity: CreateActivityInput,
   ): Promise<Activity> {
-    return this.activityService.create(context.user!.id, createActivity);
+    return this.activityService.create(context.jwtPayload.id, createActivity);
   }
 
   @Mutation(() => Boolean)
   @UseGuards(AuthGuard)
   async markActivityAsFavorite(
-    @Context() context: any,
+    @Context() context: ContextWithJWTPayload,
     @Args('markActivityAsFavoriteInput')
     markActivityAsFavoriteInput: MarkActivityAsFavoriteInput,
   ): Promise<boolean> {
@@ -98,7 +101,7 @@ export class ActivityResolver {
       throw new Error('Activity not found');
     }
     await this.userServices.addFavoriteActivity({
-      userId: context.user!.id,
+      userId: context.jwtPayload.id,
       activityId: markActivityAsFavoriteInput.activityId,
     });
 
