@@ -12,52 +12,28 @@ export class ActivityService {
   ) {}
 
   async findAll(): Promise<Activity[]> {
-    return (
-      this.activityModel
-        .find()
-        .sort({ createdAt: -1 })
-        // .populate('owner')
-        .exec()
-    );
+    return this.activityModel.find().sort({ createdAt: -1 }).exec();
   }
 
   async findLatest(): Promise<Activity[]> {
-    return (
-      this.activityModel
-        .find()
-        .sort({ createdAt: -1 })
-        .limit(3)
-        // .populate('owner')
-        .exec()
-    );
+    return this.activityModel.find().sort({ createdAt: -1 }).limit(3).exec();
   }
 
   async findByUser(userId: string): Promise<Activity[]> {
-    return (
-      this.activityModel
-        .find({ owner: userId })
-        .sort({ createdAt: -1 })
-        // .populate('owner')
-        .exec()
-    );
+    return this.activityModel
+      .find({ owner: userId })
+      .sort({ createdAt: -1 })
+      .exec();
   }
 
   async findOne(id: string): Promise<Activity> {
-    const activity = await this.activityModel
-      .findById(id)
-      // .populate('owner')
-      .exec();
+    const activity = await this.activityModel.findById(id).exec();
     if (!activity) throw new NotFoundException();
     return activity;
   }
 
   async findByIds(ids: string[]): Promise<Activity[]> {
-    return (
-      this.activityModel
-        .find({ _id: { $in: ids } })
-        // .populate('owner')
-        .exec()
-    );
+    return this.activityModel.find({ _id: { $in: ids } }).exec();
   }
 
   async create(userId: string, data: CreateActivityInput): Promise<Activity> {
@@ -65,7 +41,7 @@ export class ActivityService {
       ...data,
       owner: userId,
     });
-    return activity; //.populate('owner');
+    return activity;
   }
 
   async findCities(): Promise<string[]> {
@@ -77,20 +53,15 @@ export class ActivityService {
     activity?: string,
     price?: number,
   ): Promise<Activity[]> {
-    return (
-      this.activityModel
-        .find({
-          $and: [
-            { city },
-            ...(price ? [{ price }] : []),
-            ...(activity
-              ? [{ name: { $regex: activity, $options: 'i' } }]
-              : []),
-          ],
-        })
-        // .populate('owner')
-        .exec()
-    );
+    return this.activityModel
+      .find({
+        $and: [
+          { city },
+          ...(price ? [{ price }] : []),
+          ...(activity ? [{ name: { $regex: activity, $options: 'i' } }] : []),
+        ],
+      })
+      .exec();
   }
 
   async countDocuments(): Promise<number> {
