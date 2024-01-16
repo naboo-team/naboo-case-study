@@ -1,21 +1,11 @@
-import {
-  Resolver,
-  Mutation,
-  Args,
-  Context,
-  GraphQLExecutionContext,
-} from '@nestjs/graphql';
-import { SignInDto, SignInInput, SignUpInput } from '../types';
-import { UserDto } from '../../user/types/user.dto';
-import { AuthService } from '../auth.service';
-import { UserMapper } from '../../user/mapper/user.mapper';
+import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { SignInDto, SignInInput, SignUpInput } from './types';
+import { AuthService } from './auth.service';
+import { User } from 'src/user/user.schema';
 
 @Resolver('Auth')
 export class AuthResolver {
-  constructor(
-    private authService: AuthService,
-    private userMapper: UserMapper,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @Mutation(() => SignInDto)
   async login(
@@ -31,12 +21,11 @@ export class AuthResolver {
     return data;
   }
 
-  @Mutation(() => UserDto)
+  @Mutation(() => User)
   async register(
     @Args('signUpInput') createUserDto: SignUpInput,
-  ): Promise<UserDto> {
-    const user = await this.authService.signUp(createUserDto);
-    return this.userMapper.convert(user);
+  ): Promise<User> {
+    return this.authService.signUp(createUserDto);
   }
 
   @Mutation(() => Boolean)

@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 import OwnerFragment from "./owner";
 
 const ActivityFragment = gql`
-  fragment Activity on ActivityDto {
+  fragment Activity on Activity {
     id
     city
     description

@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 
 const OwnerFragment = gql`
-  fragment Owner on UserDto {
+  fragment Owner on User {
     firstName
     lastName
   }

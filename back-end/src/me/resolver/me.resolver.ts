@@ -1,21 +1,16 @@
 import { Context, Query, Resolver } from '@nestjs/graphql';
-import { UserMapper } from '../../user/mapper/user.mapper';
 import { UserService } from '../../user/user.service';
-import { UserDto } from '../../user/types/user.dto';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../auth/auth.guard';
+import { User } from 'src/user/user.schema';
 
 @Resolver('Me')
 export class MeResolver {
-  constructor(
-    private readonly userService: UserService,
-    private readonly userMapper: UserMapper,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
-  @Query(() => UserDto)
+  @Query(() => User)
   @UseGuards(AuthGuard)
-  async getMe(@Context() context: any): Promise<UserDto> {
-    const user = await this.userService.getById(context.user!.id);
-    return this.userMapper.convert(user);
+  async getMe(@Context() context: any): Promise<User> {
+    return this.userService.getById(context.user!.id);
   }
 }

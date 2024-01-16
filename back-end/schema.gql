@@ -2,12 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type ActivityDto {
+type Activity {
   city: String!
   description: String!
-  id: String!
+  id: ID!
   name: String!
-  owner: UserDto!
+  owner: User!
   price: Int!
 }
 
@@ -23,22 +23,22 @@ input MarkActivityAsFavoriteInput {
 }
 
 type Mutation {
-  createActivity(createActivityInput: CreateActivityInput!): ActivityDto!
+  createActivity(createActivityInput: CreateActivityInput!): Activity!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   markActivityAsFavorite(markActivityAsFavoriteInput: MarkActivityAsFavoriteInput!): Boolean!
-  register(signUpInput: SignUpInput!): UserDto!
+  register(signUpInput: SignUpInput!): User!
 }
 
 type Query {
-  getActivities: [ActivityDto!]!
-  getActivitiesByCity(activity: String, city: String!, price: Int): [ActivityDto!]!
-  getActivitiesByUser: [ActivityDto!]!
-  getActivity(id: String!): ActivityDto!
+  getActivities: [Activity!]!
+  getActivitiesByCity(activity: String, city: String!, price: Int): [Activity!]!
+  getActivitiesByUser: [Activity!]!
+  getActivity(id: String!): Activity!
   getCities: [String!]!
-  getLatestActivities: [ActivityDto!]!
-  getMe: UserDto!
-  getUserFavoriteActivities: [ActivityDto!]!
+  getLatestActivities: [Activity!]!
+  getMe: User!
+  getUserFavoriteActivities: [Activity!]!
 }
 
 type SignInDto {
@@ -57,9 +57,11 @@ input SignUpInput {
   password: String!
 }
 
-type UserDto {
+type User {
   email: String!
+  favoriteActivities: [Activity!]!
   firstName: String!
-  id: String!
+  id: ID!
   lastName: String!
+  password: String!
 }

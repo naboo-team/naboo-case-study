@@ -2,9 +2,8 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from 'src/auth/auth.module';
 import { ActivityService } from './activity.service';
-import { ActivityMapper } from './mapper/activity.mapper';
-import { Activity, ActivitySchema } from './schema/activity.schema';
-import { ActivityResolver } from './resolver/activity.resolver';
+import { Activity, ActivitySchema } from './activity.schema';
+import { ActivityResolver } from './activity.resolver';
 import { UserModule } from 'src/user/user.module';
 
 @Module({
@@ -15,7 +14,7 @@ import { UserModule } from 'src/user/user.module';
     AuthModule,
     UserModule,
   ],
-  exports: [ActivityService, ActivityMapper],
-  providers: [ActivityService, ActivityMapper, ActivityResolver],
+  exports: [ActivityService],
+  providers: [ActivityService, ActivityResolver],
 })
 export class ActivityModule {}

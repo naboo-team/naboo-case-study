@@ -2,16 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { SignUpInput } from 'src/auth/types';
-import { User } from './schema/user.schema';
-import { FAVORITE_POSITION_STEP } from './constants/favorites';
-import { sortFavoriteActivities } from './helpers/sortFavoriteActivities';
-import { FavoriteActivity } from './types/favoriteActivities';
+import { User } from './user.schema';
+import { Activity } from 'src/activity/activity.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    @InjectModel(Activity.name)
+    private activityModel: Model<Activity>,
   ) {}
 
   async getByEmail(email: string): Promise<User> {
@@ -22,7 +22,6 @@ export class UserService {
     return user;
   }
 
-  // ! TODO: fix type
   async findByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email: email }).exec();
   }
@@ -56,28 +55,23 @@ export class UserService {
   async addFavoriteActivity({
     userId,
     activityId,
-    position,
   }: {
     userId: string;
     activityId: string;
     position?: number | null;
   }): Promise<User> {
-    const user = await this.userModel.findById(userId).exec();
+    const user = await this.userModel.findById(userId);
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const orderedFavoriteActivities = [...user.favoriteActivities].sort(
-      sortFavoriteActivities,
-    );
-    // position is optional, if not provided, should be inferior to the current first item position
-    const firstPosition = orderedFavoriteActivities.at(0)?.position ?? 0;
-    const favoriteActivity = {
-      activityId,
-      position: position ?? firstPosition - FAVORITE_POSITION_STEP,
-    };
-    user.favoriteActivities.push(favoriteActivity);
-    await user.save();
-    return user;
+
+    const activity = await this.activityModel.findById(activityId);
+    if (!activity) {
+      throw new NotFoundException('Activity not found');
+    }
+    user.favoriteActivities.push(activity);
+    return user.save();
   }
 
   async removeFavoriteActivity({
@@ -88,16 +82,18 @@ export class UserService {
     activityId: string;
     position?: number;
   }): Promise<User> {
-    const user = await this.userModel.findById(userId).exec();
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        $pull: {
+          favoriteActivities: activityId,
+        },
+      },
+      { new: true },
+    );
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const filteredFavorites = user.favoriteActivities.filter(
-      (favoriteActivity) => favoriteActivity.activityId !== activityId,
-    );
-
-    user.favoriteActivities = filteredFavorites;
-    await user.save();
     return user;
   }
 }

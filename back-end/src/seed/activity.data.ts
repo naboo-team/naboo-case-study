@@ -1,4 +1,4 @@
-import { CreateActivityInput } from 'src/activity/types';
+import { CreateActivityInput } from 'src/activity/activity.inputs.dto';
 
 export const activities: CreateActivityInput[] = [
   {

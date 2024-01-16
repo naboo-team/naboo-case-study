@@ -13,10 +13,11 @@ export class SeedService {
   ) {}
 
   async execute(): Promise<void> {
-    const users = await this.userService.countDocuments();
-    const activities = await this.activityService.countDocuments();
+    const foundUser = Boolean(
+      await this.userService.findByEmail(userData.email),
+    );
 
-    if (users === 0 && activities === 0) {
+    if (!foundUser) {
       try {
         const hashedPassword = await bcrypt.hash(userData.password, 10);
         const user = await this.userService.createUser({

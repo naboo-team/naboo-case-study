@@ -4,9 +4,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user.module';
 import { randomUUID } from 'crypto';
+import { ActivityService } from 'src/activity/activity.service';
+import { ActivityModule } from 'src/activity/activity.module';
 
 describe('UserService', () => {
-  let service: UserService;
+  let userService: UserService;
+  let activityService: ActivityService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,26 +21,28 @@ describe('UserService', () => {
           },
         }),
         UserModule,
+        ActivityModule,
       ],
     }).compile();
 
-    service = module.get<UserService>(UserService);
+    userService = module.get<UserService>(UserService);
+    activityService = module.get<ActivityService>(ActivityService);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(userService).toBeDefined();
   });
 
   it('basic create / get', async () => {
     const email = randomUUID() + '@test.com';
-    const user = await service.createUser({
+    const user = await userService.createUser({
       email,
       password: 'password',
       firstName: 'firstName',
       lastName: 'lastName',
     });
 
-    const fetchedUser = await service.getById(user.id);
+    const fetchedUser = await userService.getById(user.id);
 
     expect(fetchedUser).toMatchObject({
       email,
@@ -48,84 +53,58 @@ describe('UserService', () => {
 
   it('allows to add/remove favorite activity', async () => {
     const email = randomUUID() + '@test.com';
-    const user = await service.createUser({
+    const user = await userService.createUser({
       email,
       password: 'password',
       firstName: 'firstName',
       lastName: 'lastName',
     });
 
-    const activityIds = [
-      randomUUID(),
-      randomUUID(),
-      randomUUID(),
-      randomUUID(),
-    ];
-    await service.addFavoriteActivity({
+    const activities = await Promise.all([
+      activityService.create(user.id, {
+        name: 'Test name 1',
+        city: 'Test city 1',
+        description: 'Test description 1',
+        price: 10,
+      }),
+      activityService.create(user.id, {
+        name: 'Test name 2',
+        city: 'Test city 2',
+        description: 'Test description 2',
+        price: 10,
+      }),
+      activityService.create(user.id, {
+        name: 'Test name 3',
+        city: 'Test city 3',
+        description: 'Test description 3',
+        price: 10,
+      }),
+    ]);
+
+    const activityIds = activities.map((activity) => activity.id);
+
+    await userService.addFavoriteActivity({
       userId: user.id,
       activityId: activityIds[0],
     });
 
-    await service.addFavoriteActivity({
+    await userService.addFavoriteActivity({
       userId: user.id,
       activityId: activityIds[1],
-      position: 1000,
     });
 
-    await service.addFavoriteActivity({
+    const result = await userService.addFavoriteActivity({
       userId: user.id,
       activityId: activityIds[2],
-      position: -1_000_000,
     });
 
-    const result = await service.addFavoriteActivity({
-      userId: user.id,
-      activityId: activityIds[3],
-    });
-
-    expect(result.favoriteActivities).toEqual([
-      {
-        activityId: activityIds[0],
-        position: expect.any(Number),
-      },
-      {
-        activityId: activityIds[1],
-        position: 1000,
-      },
-
-      {
-        activityId: activityIds[2],
-        position: -1_000_000,
-      },
-      {
-        activityId: activityIds[3],
-        position: expect.any(Number),
-      },
-    ]);
-
-    // newly favorited activity should be at the top, so position should be less than the previous one
-    expect(result.favoriteActivities[3].position).toBeLessThan(
-      result.favoriteActivities[2].position,
+    const favoritedActivityIds = result.favoriteActivities.map((activity) =>
+      activity._id.toString(),
     );
-
-    const resultPostRemoval = await service.removeFavoriteActivity({
-      userId: user.id,
-      activityId: activityIds[1],
-    });
-
-    expect(resultPostRemoval.favoriteActivities).toEqual([
-      {
-        activityId: activityIds[0],
-        position: expect.any(Number),
-      },
-      {
-        activityId: activityIds[2],
-        position: -1_000_000,
-      },
-      {
-        activityId: activityIds[3],
-        position: expect.any(Number),
-      },
+    expect(favoritedActivityIds).toMatchObject([
+      activityIds[0],
+      activityIds[1],
+      activityIds[2],
     ]);
   });
 });
