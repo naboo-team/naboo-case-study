@@ -14,7 +14,8 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext = GqlExecutionContext.create(context);
     const ctx = gqlContext.getContext();
-    const token: string | null = ctx.req.cookies['jwt'];
+    const token: string | null =
+      ctx.req.cookies['jwt'] ?? ctx.req.headers['jwt'];
 
     if (!token) throw new UnauthorizedException();
 

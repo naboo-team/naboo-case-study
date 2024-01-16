@@ -19,6 +19,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
       sortSchema: true,
+      playground: true,
       buildSchemaOptions: { numberScalarMode: 'integer' },
       context: ({ req, res }: { req: Request; res: Response }) => ({
         req,
