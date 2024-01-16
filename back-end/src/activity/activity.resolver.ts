@@ -55,16 +55,6 @@ export class ActivityResolver {
     return this.activityService.findByUser(context.user!.id);
   }
 
-  @Query(() => [Activity])
-  @UseGuards(AuthGuard)
-  async getUserFavoriteActivities(
-    @Context() context: any,
-  ): Promise<Activity[]> {
-    const user = await this.userServices.getById(context.user!.id);
-    await user.populate('favoriteActivities');
-    return user.favoriteActivities;
-  }
-
   @Query(() => [String])
   async getCities(): Promise<string[]> {
     const cities = await this.activityService.findCities();

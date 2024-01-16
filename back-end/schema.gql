@@ -38,7 +38,6 @@ type Query {
   getCities: [String!]!
   getLatestActivities: [Activity!]!
   getMe: User!
-  getUserFavoriteActivities: [Activity!]!
 }
 
 type SignInDto {

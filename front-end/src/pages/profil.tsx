@@ -60,6 +60,6 @@ export const getServerSideProps: GetServerSideProps<ProfileProps> = async ({
     context: { headers: { Cookie: req.headers.cookie } },
   });
   return {
-    props: { favoriteActivities: response.data.getUserFavoriteActivities },
+    props: { favoriteActivities: response.data.getMe.favoriteActivities },
   };
 };

@@ -178,7 +178,7 @@ export type GetActivityQuery = { __typename?: 'Query', getActivity: { __typename
 export type GetUserFavoriteActivitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserFavoriteActivitiesQuery = { __typename?: 'Query', getUserFavoriteActivities: Array<{ __typename?: 'Activity', id: string, city: string, description: string, name: string, price: number, owner: { __typename?: 'User', firstName: string, lastName: string } }> };
+export type GetUserFavoriteActivitiesQuery = { __typename?: 'Query', getMe: { __typename?: 'User', favoriteActivities: Array<{ __typename?: 'Activity', id: string, city: string, description: string, name: string, price: number, owner: { __typename?: 'User', firstName: string, lastName: string } }> } };
 
 export type GetLatestActivitiesQueryVariables = Exact<{ [key: string]: never; }>;
 

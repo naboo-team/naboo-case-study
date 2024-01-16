@@ -3,8 +3,10 @@ import gql from "graphql-tag";
 
 const GetUserFavoriteActivities = gql`
   query getUserFavoriteActivities {
-    getUserFavoriteActivities {
-      ...Activity
+    getMe {
+      favoriteActivities {
+        ...Activity
+      }
     }
   }
   ${ActivityFragment}
