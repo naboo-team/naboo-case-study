@@ -26,11 +26,6 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
         res,
       }),
     }),
-    MongooseModule.forRootAsync({
-      useFactory: () => {
-        return { uri: process.env.MONGO_URI };
-      },
-    }),
     AuthModule,
     UserModule,
     MeModule,
@@ -39,5 +34,17 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],
+})
+export class BaseAppModule {}
+
+@Module({
+  imports: [
+    BaseAppModule,
+    MongooseModule.forRootAsync({
+      useFactory: () => {
+        return { uri: process.env.MONGO_URI };
+      },
+    }),
+  ],
 })
 export class AppModule {}

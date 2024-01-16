@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user.module';
 import { randomUUID } from 'crypto';
 import { ActivityService } from 'src/activity/activity.service';
 import { ActivityModule } from 'src/activity/activity.module';
+import {
+  closeInMongodConnection,
+  rootMongooseTestModule,
+} from 'src/test/test.module';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -13,20 +15,15 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({ isGlobal: true }),
-        MongooseModule.forRootAsync({
-          useFactory: () => {
-            return { uri: process.env.MONGO_URI };
-          },
-        }),
-        UserModule,
-        ActivityModule,
-      ],
+      imports: [rootMongooseTestModule(), UserModule, ActivityModule],
     }).compile();
 
     userService = module.get<UserService>(UserService);
     activityService = module.get<ActivityService>(ActivityService);
+  });
+
+  afterAll(async () => {
+    await closeInMongodConnection();
   });
 
   it('should be defined', () => {
