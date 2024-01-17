@@ -6,6 +6,7 @@ type Activity {
   city: String!
   description: String!
   id: ID!
+  isFavorited: Boolean!
   name: String!
   owner: User!
   price: Int!
@@ -26,8 +27,9 @@ type Mutation {
   createActivity(createActivityInput: CreateActivityInput!): Activity!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
-  markActivityAsFavorite(markActivityAsFavoriteInput: MarkActivityAsFavoriteInput!): Boolean!
+  markActivityAsFavorite(markActivityAsFavoriteInput: MarkActivityAsFavoriteInput!): Activity!
   register(signUpInput: SignUpInput!): User!
+  unmarkActivityAsFavorite(unmarkActivityAsFavoriteInput: UnmarkActivityAsFavoriteInput!): Activity!
 }
 
 type Query {
@@ -38,7 +40,6 @@ type Query {
   getCities: [String!]!
   getLatestActivities: [Activity!]!
   getMe: User!
-  getUserFavoriteActivities: [Activity!]!
 }
 
 type SignInDto {
@@ -55,6 +56,10 @@ input SignUpInput {
   firstName: String!
   lastName: String!
   password: String!
+}
+
+input UnmarkActivityAsFavoriteInput {
+  activityId: String!
 }
 
 type User {

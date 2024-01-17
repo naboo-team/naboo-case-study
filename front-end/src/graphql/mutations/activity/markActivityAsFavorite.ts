@@ -6,7 +6,10 @@ const MarkActivityAsFavorite = gql`
   ) {
     markActivityAsFavorite(
       markActivityAsFavoriteInput: $markActivityAsFavoriteInput
-    )
+    ) {
+      id
+      isFavorited
+    }
   }
 `;
 
