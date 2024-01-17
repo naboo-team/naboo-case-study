@@ -4,10 +4,7 @@ import { UserModule } from './user.module';
 import { randomUUID } from 'crypto';
 import { ActivityService } from 'src/activity/activity.service';
 import { ActivityModule } from 'src/activity/activity.module';
-import {
-  closeInMongodConnection,
-  rootMongooseTestModule,
-} from 'src/test/test.module';
+import { TestModule, closeInMongodConnection } from 'src/test/test.module';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -15,7 +12,7 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [rootMongooseTestModule(), UserModule, ActivityModule],
+      imports: [TestModule, UserModule, ActivityModule],
     }).compile();
 
     userService = module.get<UserService>(UserService);

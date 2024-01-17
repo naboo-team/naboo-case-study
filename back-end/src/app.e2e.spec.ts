@@ -3,17 +3,14 @@ import { randomUUID } from 'crypto';
 import { BaseAppModule } from './app.module';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import {
-  closeInMongodConnection,
-  rootMongooseTestModule,
-} from './test/test.module';
+import { TestModule, closeInMongodConnection } from './test/test.module';
 
 describe('App e2e', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [rootMongooseTestModule(), BaseAppModule],
+      imports: [TestModule, BaseAppModule],
     }).compile();
 
     app = module.createNestApplication();

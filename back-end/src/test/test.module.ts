@@ -1,5 +1,7 @@
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 let mongod: MongoMemoryServer;
 
@@ -18,3 +20,9 @@ export const rootMongooseTestModule = (options: MongooseModuleOptions = {}) =>
 export const closeInMongodConnection = async () => {
   if (mongod) await mongod.stop();
 };
+
+@Module({
+  imports: [ConfigModule.forRoot({ isGlobal: true }), rootMongooseTestModule()],
+  exports: [ConfigModule, MongooseModule],
+})
+export class TestModule {}
