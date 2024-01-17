@@ -32,6 +32,9 @@ export class Activity extends Document {
     required: true,
   })
   owner!: User;
+
+  @Field(() => Boolean)
+  isFavorited!: boolean;
 }
 
 export const ActivitySchema = SchemaFactory.createForClass(Activity);

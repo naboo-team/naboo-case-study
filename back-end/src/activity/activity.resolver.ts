@@ -34,6 +34,20 @@ export class ActivityResolver {
     return activity._id.toString();
   }
 
+  @ResolveField(() => Boolean)
+  async isFavorited(
+    @Parent() activity: Activity,
+    @Context() context: Partial<ContextWithJWTPayload>,
+  ): Promise<boolean> {
+    if (!context.jwtPayload) {
+      return false;
+    }
+    return this.userServices.hasUserFavoritedActivity({
+      activityId: activity._id.toString(),
+      userId: context.jwtPayload.id,
+    });
+  }
+
   @ResolveField(() => User)
   async owner(@Parent() activity: Activity): Promise<User> {
     await activity.populate('owner');

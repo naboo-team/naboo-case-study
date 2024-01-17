@@ -79,10 +79,6 @@ describe('App e2e', () => {
               email
               firstName
               lastName
-              favoriteActivities {
-                id
-                city
-              }
             }
           }
         `,
@@ -94,7 +90,112 @@ describe('App e2e', () => {
       email,
       firstName: 'firstName',
       lastName: 'lastName',
-      favoriteActivities: [],
+    });
+  });
+
+  test('create activity, then favorite it - user story', async () => {
+    const email = randomUUID() + '@test.com';
+    const password = randomUUID();
+
+    await request(app.getHttpServer())
+      .post('/graphql')
+      .send({
+        query: `
+          mutation {
+            register(signUpInput:{ email: "${email}", password: "${password}", firstName: "firstName", lastName: "lastName" }) {
+              email
+            }
+          }
+        `,
+      })
+      .expect(200);
+
+    const signInResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .send({
+        query: `
+          mutation {
+            login(signInInput:{ email: "${email}", password: "${password}" }) {
+              access_token
+            }
+          }
+        `,
+      })
+      .expect(200);
+    const jwt = signInResponse.body.data.login.access_token;
+
+    const createActivityResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .set('jwt', jwt)
+      .send({
+        query: `
+          mutation createActivity {
+            createActivity(createActivityInput: { city: "Tours", description: "Visite des chateaux de la Loire et degustation de vin", name: "Visite des Chateaux", price: 9000}) {
+              id
+              name
+              owner {
+                email
+              }
+              isFavorited
+            }
+          }
+        `,
+      })
+      .expect(200);
+
+    expect(createActivityResponse.body.data.createActivity).toMatchObject({
+      id: expect.any(String),
+      name: 'Visite des Chateaux',
+      owner: {
+        email,
+      },
+      isFavorited: false,
+    });
+
+    const { id: activityId } = createActivityResponse.body.data.createActivity;
+
+    const favoriteActivityResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .set('jwt', jwt)
+      .send({
+        query: `
+        mutation favoriteActivity {
+          markActivityAsFavorite(markActivityAsFavoriteInput: {activityId: "${activityId}"})
+        }
+        `,
+      })
+      .expect(200);
+
+    expect(favoriteActivityResponse.body.data.markActivityAsFavorite).toBe(
+      true,
+    );
+
+    const getMeResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .set('jwt', jwt)
+      .send({
+        query: `
+          query {
+            getMe {
+              id
+              favoriteActivities {
+                id
+                isFavorited
+              }
+            }
+          }
+        `,
+      })
+      .expect(200);
+
+    expect(getMeResponse.body.data.getMe).toMatchObject({
+      id: expect.any(String),
+      favoriteActivities: [
+        {
+          id: activityId,
+          isFavorited: true,
+        },
+      ],
     });
   });
 });
