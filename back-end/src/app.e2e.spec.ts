@@ -76,6 +76,9 @@ describe('App e2e', () => {
               email
               firstName
               lastName
+              permissions {
+                canEnableDebugMode
+              }
             }
           }
         `,
@@ -87,6 +90,9 @@ describe('App e2e', () => {
       email,
       firstName: 'firstName',
       lastName: 'lastName',
+      permissions: {
+        canEnableDebugMode: false,
+      },
     });
   });
 

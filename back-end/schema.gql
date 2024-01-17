@@ -69,4 +69,9 @@ type User {
   id: ID!
   lastName: String!
   password: String!
+  permissions: UserPermissions!
+}
+
+type UserPermissions {
+  canEnableDebugMode: Boolean!
 }

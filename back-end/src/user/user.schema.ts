@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Activity } from 'src/activity/activity.schema';
+import { UserPermissions } from './user.permissions.schema';
 
 @ObjectType()
 @Schema({ timestamps: true })
@@ -39,6 +40,9 @@ export class User extends Document {
   @Field(() => [Activity])
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Activity' }] })
   favoriteActivities: Activity[];
+
+  @Field(() => UserPermissions)
+  permissions!: UserPermissions;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
