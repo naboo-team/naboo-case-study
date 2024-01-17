@@ -133,4 +133,40 @@ describe('UserService', () => {
       }),
     ).rejects.toThrowError('Activity already favorited');
   });
+
+  it('hasUserFavoritedActivity returns if specified user favorited specified activity', async () => {
+    const email = randomUUID() + '@test.com';
+    const user = await userService.createUser({
+      email,
+      password: 'password',
+      firstName: 'firstName',
+      lastName: 'lastName',
+    });
+
+    const activity = await activityService.create(user.id, {
+      name: 'Test name 1',
+      city: 'Test city 1',
+      description: 'Test description 1',
+      price: 10,
+    });
+
+    await expect(
+      userService.hasUserFavoritedActivity({
+        activityId: activity.id,
+        userId: user.id,
+      }),
+    ).resolves.toBeFalsy();
+
+    await userService.addFavoriteActivity({
+      userId: user.id,
+      activityId: activity.id,
+    });
+
+    await expect(
+      userService.hasUserFavoritedActivity({
+        activityId: activity.id,
+        userId: user.id,
+      }),
+    ).resolves.toBeTruthy();
+  });
 });

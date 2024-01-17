@@ -83,6 +83,22 @@ export class UserService {
     return user.save();
   }
 
+  async hasUserFavoritedActivity({
+    activityId,
+    userId,
+  }: {
+    activityId: string;
+    userId: string;
+  }): Promise<boolean> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user.favoriteActivities.some(
+      (activity) => activity._id.toString() === activityId,
+    );
+  }
+
   async removeFavoriteActivity({
     userId,
     activityId,
