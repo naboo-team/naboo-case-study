@@ -12,21 +12,22 @@ export class SeedService {
   ) {}
 
   async execute(): Promise<void> {
-    const foundUser = Boolean(
-      await this.userService.findByEmail(userData.email),
-    );
+    let user = await this.userService.findByEmail(userData.email);
+    const userExisted = Boolean(user);
+    if (!user) {
+      user = await this.userService.createUser(userData);
+    }
 
-    if (!foundUser) {
+    const admin = await this.userService.findByEmail(adminData.email);
+    if (!admin) {
+      await this.userService.createUser(adminData);
+    }
+
+    if (!userExisted) {
       try {
-        const hashedPassword = await bcrypt.hash(userData.password, 10);
-        const user = await this.userService.createUser({
-          ...userData,
-          password: hashedPassword,
-        });
-
         await Promise.all(
           activitiesData.map((activity) =>
-            this.activityService.create(user._id, activity),
+            this.activityService.create(user!._id, activity),
           ),
         );
         Logger.log('Seeding successful!');

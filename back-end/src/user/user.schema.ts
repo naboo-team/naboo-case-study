@@ -14,6 +14,9 @@ export class User extends Document {
   @Field(() => ID)
   id!: string;
 
+  @Prop({ required: true, enum: ['user', 'admin'], default: 'user' })
+  role!: 'user' | 'admin';
+
   @Field()
   @Prop({ required: true })
   firstName!: string;
