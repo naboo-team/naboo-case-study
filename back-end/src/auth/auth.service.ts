@@ -47,11 +47,9 @@ export class AuthService {
 
     if (user) throw new UnauthorizedException();
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     return this.userService.createUser({
       email,
-      password: hashedPassword,
+      password,
       firstName,
       lastName,
     });

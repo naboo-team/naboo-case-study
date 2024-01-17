@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { SignUpInput } from 'src/auth/types';
 import { User } from './user.schema';
 import { Activity } from 'src/activity/activity.schema';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -34,8 +35,13 @@ export class UserService {
     return user;
   }
 
-  async createUser(data: SignUpInput): Promise<User> {
-    const user = new this.userModel(data);
+  async createUser(
+    data: SignUpInput & {
+      role?: User['role'];
+    },
+  ): Promise<User> {
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const user = new this.userModel({ ...data, password: hashedPassword });
     return user.save();
   }
 

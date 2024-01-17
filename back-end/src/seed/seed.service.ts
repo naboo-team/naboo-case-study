@@ -1,9 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { ActivityService } from '../activity/activity.service';
 import { UserService } from '../user/user.service';
 import { activities as activitiesData } from './activity.data';
-import { user as userData } from './user.data';
+import { user as userData, admin as adminData } from './user.data';
 
 @Injectable()
 export class SeedService {
