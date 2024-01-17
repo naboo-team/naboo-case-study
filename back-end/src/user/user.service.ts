@@ -5,6 +5,7 @@ import { SignUpInput } from 'src/auth/types';
 import { User } from './user.schema';
 import { Activity } from 'src/activity/activity.schema';
 import * as bcrypt from 'bcrypt';
+import { UserPermissions } from './user.permissions.schema';
 
 @Injectable()
 export class UserService {
@@ -126,5 +127,19 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
     return user;
+  }
+
+  async getUserPermissions({
+    userId,
+  }: {
+    userId: string;
+  }): Promise<UserPermissions> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return {
+      canEnableDebugMode: user.role === 'admin',
+    };
   }
 }

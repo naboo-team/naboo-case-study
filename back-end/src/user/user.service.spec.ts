@@ -166,4 +166,38 @@ describe('UserService', () => {
       }),
     ).resolves.toBeTruthy();
   });
+
+  it('user.permissions', async () => {
+    const user = await userService.createUser({
+      email: randomUUID() + '@test.com',
+      password: 'password',
+      firstName: 'firstName',
+      lastName: 'lastName',
+      role: 'user',
+    });
+
+    const admin = await userService.createUser({
+      email: randomUUID() + '@test.com',
+      password: 'password',
+      firstName: 'firstName',
+      lastName: 'lastName',
+      role: 'admin',
+    });
+
+    await expect(
+      userService.getUserPermissions({
+        userId: user.id,
+      }),
+    ).resolves.toEqual({
+      canEnableDebugMode: false,
+    });
+
+    await expect(
+      userService.getUserPermissions({
+        userId: admin.id,
+      }),
+    ).resolves.toEqual({
+      canEnableDebugMode: true,
+    });
+  });
 });
