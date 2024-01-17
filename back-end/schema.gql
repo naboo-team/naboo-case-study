@@ -27,8 +27,9 @@ type Mutation {
   createActivity(createActivityInput: CreateActivityInput!): Activity!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
-  markActivityAsFavorite(markActivityAsFavoriteInput: MarkActivityAsFavoriteInput!): Boolean!
+  markActivityAsFavorite(markActivityAsFavoriteInput: MarkActivityAsFavoriteInput!): Activity!
   register(signUpInput: SignUpInput!): User!
+  unmarkActivityAsFavorite(unmarkActivityAsFavoriteInput: UnmarkActivityAsFavoriteInput!): Activity!
 }
 
 type Query {
@@ -55,6 +56,10 @@ input SignUpInput {
   firstName: String!
   lastName: String!
   password: String!
+}
+
+input UnmarkActivityAsFavoriteInput {
+  activityId: String!
 }
 
 type User {

@@ -157,15 +157,19 @@ describe('App e2e', () => {
       .send({
         query: `
         mutation favoriteActivity {
-          markActivityAsFavorite(markActivityAsFavoriteInput: {activityId: "${activityId}"})
+          markActivityAsFavorite(markActivityAsFavoriteInput: {activityId: "${activityId}"}) {
+            id
+            isFavorited
+          }
         }
         `,
       })
       .expect(200);
 
-    expect(favoriteActivityResponse.body.data.markActivityAsFavorite).toBe(
-      true,
-    );
+    expect(favoriteActivityResponse.body.data.markActivityAsFavorite).toEqual({
+      id: activityId,
+      isFavorited: true,
+    });
 
     const getMeResponse = await request(app.getHttpServer())
       .post('/graphql')
@@ -193,6 +197,28 @@ describe('App e2e', () => {
           isFavorited: true,
         },
       ],
+    });
+
+    const unfavoriteActivityResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .set('jwt', jwt)
+      .send({
+        query: `
+        mutation unfavoriteActivity {
+          unmarkActivityAsFavorite(unmarkActivityAsFavoriteInput: {activityId: "${activityId}"}) {
+            id
+            isFavorited
+          }
+        }
+        `,
+      })
+      .expect(200);
+
+    expect(
+      unfavoriteActivityResponse.body.data.unmarkActivityAsFavorite,
+    ).toEqual({
+      id: activityId,
+      isFavorited: false,
     });
   });
 });

@@ -18,6 +18,7 @@ import { Activity } from './activity.schema';
 import {
   CreateActivityInput,
   MarkActivityAsFavoriteInput,
+  UnmarkActivityAsFavoriteInput,
 } from './activity.inputs.dto';
 import { User } from 'src/user/user.schema';
 import { ContextWithJWTPayload } from 'src/auth/types/context';
@@ -101,13 +102,13 @@ export class ActivityResolver {
     return this.activityService.create(context.jwtPayload.id, createActivity);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Activity)
   @UseGuards(AuthGuard)
   async markActivityAsFavorite(
     @Context() context: ContextWithJWTPayload,
     @Args('markActivityAsFavoriteInput')
     markActivityAsFavoriteInput: MarkActivityAsFavoriteInput,
-  ): Promise<boolean> {
+  ): Promise<Activity> {
     const activity = await this.activityService.findOne(
       markActivityAsFavoriteInput.activityId,
     );
@@ -119,6 +120,27 @@ export class ActivityResolver {
       activityId: markActivityAsFavoriteInput.activityId,
     });
 
-    return true;
+    return activity;
+  }
+
+  @Mutation(() => Activity)
+  @UseGuards(AuthGuard)
+  async unmarkActivityAsFavorite(
+    @Context() context: ContextWithJWTPayload,
+    @Args('unmarkActivityAsFavoriteInput')
+    markActivityAsFavoriteInput: UnmarkActivityAsFavoriteInput,
+  ): Promise<Activity> {
+    const activity = await this.activityService.findOne(
+      markActivityAsFavoriteInput.activityId,
+    );
+    if (!activity) {
+      throw new Error('Activity not found');
+    }
+    await this.userServices.removeFavoriteActivity({
+      userId: context.jwtPayload.id,
+      activityId: markActivityAsFavoriteInput.activityId,
+    });
+
+    return activity;
   }
 }

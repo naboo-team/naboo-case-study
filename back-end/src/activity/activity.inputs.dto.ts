@@ -28,3 +28,10 @@ export class MarkActivityAsFavoriteInput {
   @IsNotEmpty()
   activityId!: string;
 }
+
+@InputType()
+export class UnmarkActivityAsFavoriteInput {
+  @Field()
+  @IsNotEmpty()
+  activityId!: string;
+}
