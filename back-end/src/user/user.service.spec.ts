@@ -104,4 +104,33 @@ describe('UserService', () => {
       activityIds[2],
     ]);
   });
+
+  it('prevents favoriting the same activity twice', async () => {
+    const email = randomUUID() + '@test.com';
+    const user = await userService.createUser({
+      email,
+      password: 'password',
+      firstName: 'firstName',
+      lastName: 'lastName',
+    });
+
+    const activity = await activityService.create(user.id, {
+      name: 'Test name 1',
+      city: 'Test city 1',
+      description: 'Test description 1',
+      price: 10,
+    });
+
+    await userService.addFavoriteActivity({
+      userId: user.id,
+      activityId: activity.id,
+    });
+
+    await expect(
+      userService.addFavoriteActivity({
+        userId: user.id,
+        activityId: activity.id,
+      }),
+    ).rejects.toThrowError('Activity already favorited');
+  });
 });

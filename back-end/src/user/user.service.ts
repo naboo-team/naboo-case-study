@@ -70,6 +70,15 @@ export class UserService {
     if (!activity) {
       throw new NotFoundException('Activity not found');
     }
+
+    if (
+      user.favoriteActivities.some(
+        (activity) => activity._id.toString() === activityId,
+      )
+    ) {
+      throw new Error('Activity already favorited');
+    }
+
     user.favoriteActivities.push(activity);
     return user.save();
   }
