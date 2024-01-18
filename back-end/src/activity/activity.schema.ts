@@ -35,6 +35,9 @@ export class Activity extends Document {
 
   @Field(() => Boolean)
   isFavorited!: boolean;
+
+  @Field(() => Date, { nullable: true })
+  createdAt!: Date;
 }
 
 export const ActivitySchema = SchemaFactory.createForClass(Activity);

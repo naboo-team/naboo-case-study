@@ -4,6 +4,7 @@
 
 type Activity {
   city: String!
+  createdAt: DateTime
   description: String!
   id: ID!
   isFavorited: Boolean!
@@ -18,6 +19,11 @@ input CreateActivityInput {
   name: String!
   price: Int!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 input MarkActivityAsFavoriteInput {
   activityId: String!

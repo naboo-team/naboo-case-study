@@ -55,6 +55,25 @@ export class ActivityResolver {
     return activity.owner;
   }
 
+  @ResolveField(() => Date)
+  async createdAt(
+    @Parent() activity: Activity,
+    @Context() context: ContextWithJWTPayload,
+  ): Promise<Date | null> {
+    if (!context.jwtPayload) {
+      return null;
+    }
+    const user = await this.userServices.getById(context.jwtPayload.id);
+    if (!user) {
+      return null;
+    }
+
+    if (user.debugModeEnabled) {
+      return activity.createdAt;
+    }
+    return null;
+  }
+
   @Query(() => [Activity])
   async getActivities(): Promise<Activity[]> {
     return this.activityService.findAll();

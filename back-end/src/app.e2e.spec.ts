@@ -6,11 +6,13 @@ import * as request from 'supertest';
 import { TestModule, closeInMongodConnection } from './test/test.module';
 import { UserService } from './user/user.service';
 import { AuthService } from './auth/auth.service';
+import { ActivityService } from './activity/activity.service';
 
 describe('App e2e', () => {
   let app: INestApplication;
   let userService: UserService;
   let authService: AuthService;
+  let activityService: ActivityService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,6 +21,7 @@ describe('App e2e', () => {
 
     app = module.createNestApplication();
     userService = module.get<UserService>(UserService);
+    activityService = module.get<ActivityService>(ActivityService);
     authService = module.get<AuthService>(AuthService);
     await app.init();
   });
@@ -243,6 +246,13 @@ describe('App e2e', () => {
     });
     const userJwt = await authService.generateToken({ user });
 
+    const activity = await activityService.create(user.id, {
+      name: 'Test name 1',
+      city: 'Test city 1',
+      description: 'Test description 1',
+      price: 10,
+    });
+
     const userSetDebugModeResponse = await request(app.getHttpServer())
       .post('/graphql')
       .set('jwt', userJwt)
@@ -263,6 +273,28 @@ describe('App e2e', () => {
       'Forbidden',
     );
 
+    const userFetchesActivityResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .set('jwt', userJwt)
+      .send({
+        query: `
+        query {
+          getActivity(id: "${activity.id}") {
+            id
+            createdAt
+          }
+        }
+        `,
+      })
+      .expect(200);
+
+    expect(userFetchesActivityResponse.body.data).toMatchObject({
+      getActivity: {
+        id: activity.id,
+        createdAt: null,
+      },
+    });
+
     const admin = await userService.createUser({
       email: randomUUID() + '@test.com',
       password: randomUUID(),
@@ -271,6 +303,28 @@ describe('App e2e', () => {
       role: 'admin',
     });
     const adminJwt = await authService.generateToken({ user: admin });
+
+    const adminFetchesActivityResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .set('jwt', adminJwt)
+      .send({
+        query: `
+        query {
+          getActivity(id: "${activity.id}") {
+            id
+            createdAt
+          }
+        }
+        `,
+      })
+      .expect(200);
+
+    expect(adminFetchesActivityResponse.body.data).toMatchObject({
+      getActivity: {
+        id: activity.id,
+        createdAt: null,
+      },
+    });
 
     const adminSetDebugModeResponse = await request(app.getHttpServer())
       .post('/graphql')
@@ -291,6 +345,32 @@ describe('App e2e', () => {
     expect(adminSetDebugModeResponse.body.data.setDebugMode).toMatchObject({
       id: admin.id,
       debugModeEnabled: true,
+    });
+
+    const adminFetchesActivityAfterEnablingDebugResponse = await request(
+      app.getHttpServer(),
+    )
+      .post('/graphql')
+      .set('jwt', adminJwt)
+      .send({
+        query: `
+        query {
+          getActivity(id: "${activity.id}") {
+            id
+            createdAt
+          }
+        }
+        `,
+      })
+      .expect(200);
+
+    expect(
+      adminFetchesActivityAfterEnablingDebugResponse.body.data,
+    ).toMatchObject({
+      getActivity: {
+        id: activity.id,
+        createdAt: expect.any(String),
+      },
     });
   });
 });
