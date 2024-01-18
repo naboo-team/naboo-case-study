@@ -43,6 +43,10 @@ export class User extends Document {
 
   @Field(() => UserPermissions)
   permissions!: UserPermissions;
+
+  @Field(() => Boolean)
+  @Prop({ default: false })
+  debugModeEnabled!: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

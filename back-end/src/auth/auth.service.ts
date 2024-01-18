@@ -24,17 +24,21 @@ export class AuthService {
     if (!isSamePassword)
       throw new HttpException('Wrong credentials provided', 400);
 
+    const token = await this.generateToken({ user });
+
+    await this.userService.updateToken(user.id, token);
+
+    return { access_token: token };
+  }
+
+  async generateToken({ user }: { user: User }): Promise<string> {
     const payload: PayloadDto = {
       id: user.id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
     };
-    const token = await this.jwtService.signAsync(payload);
-
-    await this.userService.updateToken(user.id, token);
-
-    return { access_token: token };
+    return await this.jwtService.signAsync(payload);
   }
 
   async signUp({

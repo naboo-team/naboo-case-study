@@ -5,3 +5,5 @@ export class UserPermissions {
   @Field()
   canEnableDebugMode!: boolean;
 }
+
+export type UserPermissionsType = keyof UserPermissions;

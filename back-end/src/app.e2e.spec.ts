@@ -4,9 +4,13 @@ import { BaseAppModule } from './app.module';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { TestModule, closeInMongodConnection } from './test/test.module';
+import { UserService } from './user/user.service';
+import { AuthService } from './auth/auth.service';
 
 describe('App e2e', () => {
   let app: INestApplication;
+  let userService: UserService;
+  let authService: AuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -14,6 +18,8 @@ describe('App e2e', () => {
     }).compile();
 
     app = module.createNestApplication();
+    userService = module.get<UserService>(UserService);
+    authService = module.get<AuthService>(AuthService);
     await app.init();
   });
 
@@ -225,6 +231,66 @@ describe('App e2e', () => {
     ).toEqual({
       id: activityId,
       isFavorited: false,
+    });
+  });
+
+  test('debug mode user story', async () => {
+    const user = await userService.createUser({
+      email: randomUUID() + '@test.com',
+      password: randomUUID(),
+      firstName: 'firstName',
+      lastName: 'lastName',
+    });
+    const userJwt = await authService.generateToken({ user });
+
+    const userSetDebugModeResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .set('jwt', userJwt)
+      .send({
+        query: `
+          mutation setDebugMode {
+            setDebugMode(setDebugModeInput: { enabled: true}) {
+              id
+              debugModeEnabled
+            }
+          }
+        `,
+      })
+      .expect(200);
+
+    expect(userSetDebugModeResponse.body.data).toBeFalsy();
+    expect(userSetDebugModeResponse.body.errors['0'].message).toMatch(
+      'Forbidden',
+    );
+
+    const admin = await userService.createUser({
+      email: randomUUID() + '@test.com',
+      password: randomUUID(),
+      firstName: 'firstName',
+      lastName: 'lastName',
+      role: 'admin',
+    });
+    const adminJwt = await authService.generateToken({ user: admin });
+
+    const adminSetDebugModeResponse = await request(app.getHttpServer())
+      .post('/graphql')
+      .set('jwt', adminJwt)
+      .send({
+        query: `
+          mutation setDebugMode {
+            setDebugMode(setDebugModeInput: { enabled: true}) {
+              id
+              debugModeEnabled
+            }
+          }
+        `,
+      })
+      .expect(200);
+
+    expect(adminSetDebugModeResponse.body.errors).toBeFalsy();
+    expect(adminSetDebugModeResponse.body.data.setDebugMode).toMatchObject({
+      id: admin.id,
+      debugModeEnabled: true,
     });
   });
 });

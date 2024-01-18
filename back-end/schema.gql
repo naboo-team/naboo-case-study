@@ -29,6 +29,7 @@ type Mutation {
   logout: Boolean!
   markActivityAsFavorite(markActivityAsFavoriteInput: MarkActivityAsFavoriteInput!): Activity!
   register(signUpInput: SignUpInput!): User!
+  setDebugMode(setDebugModeInput: SetDebugModeInput!): User!
   unmarkActivityAsFavorite(unmarkActivityAsFavoriteInput: UnmarkActivityAsFavoriteInput!): Activity!
 }
 
@@ -40,6 +41,10 @@ type Query {
   getCities: [String!]!
   getLatestActivities: [Activity!]!
   getMe: User!
+}
+
+input SetDebugModeInput {
+  enabled: Boolean!
 }
 
 type SignInDto {
@@ -63,6 +68,7 @@ input UnmarkActivityAsFavoriteInput {
 }
 
 type User {
+  debugModeEnabled: Boolean!
   email: String!
   favoriteActivities: [Activity!]!
   firstName: String!
