@@ -1,3 +1,24 @@
+# Session #2 - TODO
+
+- fix favorites
+  - prevent favoriting same activity twice
+  - expose isFavorited on activity
+  - plug remove form favs
+  - move ctx initialisation from auth guard to a middleware
+- admin / debug mode
+  - add user.role
+  - layer permission user.permissions<{ canEnableDebugMode: boolean}>
+  - expose graphql
+  - mutation to enable/disable
+  - effect
+
+# Session #3 - TODO
+
+- test helpers
+  - setup a user + jwt
+  - generate a handful activities
+- setup dataloaders services (scope: request) on both activity and users
+
 # Codebase comments
 
 - setup workspaces - turborepo
