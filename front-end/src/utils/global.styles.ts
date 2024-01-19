@@ -10,4 +10,8 @@ export const useGlobalStyles = createStyles(() => ({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
   },
+
+  cursorPointer: {
+    cursor: "pointer",
+  },
 }));

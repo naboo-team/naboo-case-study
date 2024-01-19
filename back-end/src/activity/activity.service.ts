@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { Activity } from './schema/activity.schema';
 import { CreateActivityInput } from './types';
 
@@ -11,9 +11,18 @@ export class ActivityService {
     private activityModel: Model<Activity>,
   ) {}
 
-  async findAll(): Promise<Activity[]> {
+  async findAll(): Promise<Activity[]>;
+  async findAll(filters: FilterQuery<Activity>): Promise<Activity[]>;
+  async findAll(filters?: FilterQuery<Activity>): Promise<Activity[]> {
+    if (!filters) {
+      return this.activityModel
+        .find()
+        .sort({ createdAt: -1 })
+        .populate('owner')
+        .exec();
+    }
     return this.activityModel
-      .find()
+      .find(filters)
       .sort({ createdAt: -1 })
       .populate('owner')
       .exec();

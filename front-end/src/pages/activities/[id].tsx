@@ -1,5 +1,5 @@
 import { PageTitle } from "@/components";
-import { graphqlClient } from "@/graphql/apollo";
+import { withApolloClient } from "@/graphql/apollo";
 import {
   GetActivityQuery,
   GetActivityQueryVariables,
@@ -16,9 +16,10 @@ interface ActivityDetailsProps {
 
 export const getServerSideProps: GetServerSideProps<
   ActivityDetailsProps
-> = async ({ params }) => {
+> = withApolloClient(async (client, context) => {
+  const params = context.params;
   if (!params?.id || Array.isArray(params.id)) return { notFound: true };
-  const response = await graphqlClient.query<
+  const response = await client.query<
     GetActivityQuery,
     GetActivityQueryVariables
   >({
@@ -26,7 +27,7 @@ export const getServerSideProps: GetServerSideProps<
     variables: { id: params.id },
   });
   return { props: { activity: response.data.getActivity } };
-};
+})
 
 export default function ActivityDetails({ activity }: ActivityDetailsProps) {
   const router = useRouter();

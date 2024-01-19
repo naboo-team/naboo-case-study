@@ -1,14 +1,30 @@
-import { ActivityFragment } from "@/graphql/generated/types";
+import { ActivityFragment, ToggleFavoriteMutation, ToggleFavoriteMutationVariables } from "@/graphql/generated/types";
+import { TOGGLE_FAVORITE_QUERY } from "@/graphql/mutations/activity/toggleFavorite.query";
+import GetUser from "@/graphql/queries/auth/getUser";
+import { useAuth } from "@/hooks";
+import { useDebugMode } from "@/hooks/useDebugMode";
 import { useGlobalStyles } from "@/utils";
+import { useMutation } from "@apollo/client";
 import { Badge, Button, Card, Grid, Group, Image, Text } from "@mantine/core";
+import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import Link from "next/link";
 
 interface ActivityProps {
   activity: ActivityFragment;
 }
 
-export function Activity({ activity }: ActivityProps) {
+export function Activity({ activity  }: ActivityProps) {
   const { classes } = useGlobalStyles();
+  const { user } = useAuth();
+  const [isDebugMode] =  useDebugMode()
+
+  const [toggleFavorite] = useMutation<ToggleFavoriteMutation, ToggleFavoriteMutationVariables>(TOGGLE_FAVORITE_QUERY, { variables: { activityId: activity.id }, optimisticResponse: {
+    toggleFavorite: {
+      __typename: "ActivityDto",
+      id: activity.id,
+      isFavorite: !activity.isFavorite,
+    },
+  }, refetchQueries: [{ query: GetUser }]});
 
   return (
     <Grid.Col span={4}>
@@ -21,8 +37,9 @@ export function Activity({ activity }: ActivityProps) {
           />
         </Card.Section>
 
-        <Group position="apart" mt="md" mb="xs">
-          <Text weight={500} className={classes.ellipsis}>
+        <Group position="left" mt="md" mb="xs" dir="row" noWrap >   
+         {activity.isFavorite ?  <IconStarFilled onClick={() => user && toggleFavorite()} className={classes.cursorPointer}/> : <IconStar onClick={() => user && toggleFavorite()} className={classes.cursorPointer}/>}
+         <Text weight={500} className={classes.ellipsis}>
             {activity.name}
           </Text>
         </Group>
@@ -45,6 +62,10 @@ export function Activity({ activity }: ActivityProps) {
             Voir plus
           </Button>
         </Link>
+
+        {isDebugMode && <Text mt="xs" size="sm" color="dimmed" className={classes.ellipsis}>
+          {activity.createdAt}
+        </Text>}
       </Card>
     </Grid.Col>
   );

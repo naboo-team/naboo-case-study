@@ -1,23 +1,38 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { UserDto } from 'src/user/types/user.dto';
+import { Activity } from '../schema/activity.schema';
+import { CurrentUser } from 'src/utils/user.decorator';
 
 @ObjectType()
 export class ActivityDto {
+  constructor(private readonly activity: Activity) {}
   @Field()
-  id!: string;
+  get id(): string {
+    return this.activity._id;
+  }
 
   @Field()
-  name!: string;
+  get name(): string {
+    return this.activity.name;
+  }
 
   @Field()
-  city!: string;
+  get city(): string {
+    return this.activity.city;
+  }
 
   @Field()
-  description!: string;
+  get description(): string {
+    return this.activity.description;
+  }
 
   @Field(() => Int)
-  price!: number;
+  get price(): number {
+    return this.activity.price;
+  }
 
   @Field(() => UserDto)
-  owner!: UserDto;
+  get owner(): UserDto {
+    return new UserDto(this.activity.owner);
+  }
 }

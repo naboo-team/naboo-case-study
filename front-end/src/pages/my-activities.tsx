@@ -1,5 +1,5 @@
 import { Activity, EmptyData, PageTitle } from "@/components";
-import { graphqlClient } from "@/graphql/apollo";
+import { withApolloClient } from "@/graphql/apollo";
 import {
   GetUserActivitiesQuery,
   GetUserActivitiesQueryVariables,
@@ -7,30 +7,31 @@ import {
 import GetUserActivities from "@/graphql/queries/activity/getUserActivities";
 import { withAuth } from "@/hocs";
 import { useAuth } from "@/hooks";
+import { useQuery } from "@apollo/client";
 import { Button, Grid, Group } from "@mantine/core";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 
-interface MyActivitiesProps {
-  activities: GetUserActivitiesQuery["getActivitiesByUser"];
-}
-
 export const getServerSideProps: GetServerSideProps<
-  MyActivitiesProps
-> = async ({ req }) => {
-  const response = await graphqlClient.query<
+  {}
+> = withApolloClient(async (client) => {
+  const response = await client.query<
     GetUserActivitiesQuery,
     GetUserActivitiesQueryVariables
   >({
     query: GetUserActivities,
-    context: { headers: { Cookie: req.headers.cookie } },
   });
-  return { props: { activities: response.data.getActivitiesByUser } };
-};
+  return  { props: { activities: response.data.getActivitiesByUser } };
+})
 
-const MyActivities = ({ activities }: MyActivitiesProps) => {
+const MyActivities = () => {
   const { user } = useAuth();
+  const { data } = useQuery<GetUserActivitiesQuery, GetUserActivitiesQueryVariables>(
+    GetUserActivities
+  );
+  const activities = data?.getActivitiesByUser || [];
+
 
   return (
     <>

@@ -6,7 +6,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/user/schema/user.schema';
-import { UserDto } from 'src/user/types/user.dto';
 import { UserService } from '../user/user.service';
 import { SignInDto, SignInInput, SignUpInput } from './types';
 
@@ -24,11 +23,9 @@ export class AuthService {
     if (!isSamePassword)
       throw new HttpException('Wrong credentials provided', 400);
 
-    const payload: UserDto = {
+    const payload = {
       id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      isAdmin: user.email === 'user1@test.fr', // fake admin is user1
     };
     const token = await this.jwtService.signAsync(payload);
 

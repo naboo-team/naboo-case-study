@@ -8,6 +8,8 @@ const ActivityFragment = gql`
     description
     name
     price
+    isFavorite
+    createdAt
     owner {
       ...Owner
     }

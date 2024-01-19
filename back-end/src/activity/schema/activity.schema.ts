@@ -22,6 +22,9 @@ export class Activity extends Document {
     required: true,
   })
   owner!: User;
+
+  @Prop()
+  createdAt?: Date;
 }
 
 export const ActivitySchema = SchemaFactory.createForClass(Activity);

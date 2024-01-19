@@ -1,5 +1,5 @@
 import { ActivityListItem, EmptyData, Filters, PageTitle } from "@/components";
-import { graphqlClient } from "@/graphql/apollo";
+import { withApolloClient } from "@/graphql/apollo";
 import {
   GetActivitiesByCityQuery,
   GetActivitiesByCityQueryVariables,
@@ -18,10 +18,8 @@ interface CityDetailsProps {
   city: string;
 }
 
-export const getServerSideProps: GetServerSideProps<CityDetailsProps> = async ({
-  params,
-  query,
-}) => {
+export const getServerSideProps: GetServerSideProps<CityDetailsProps> = withApolloClient(async (client, context) => {
+  const { params, query } = context;
   if (!params?.city || Array.isArray(params.city)) return { notFound: true };
 
   if (
@@ -30,7 +28,7 @@ export const getServerSideProps: GetServerSideProps<CityDetailsProps> = async ({
   )
     return { notFound: true };
 
-  const response = await graphqlClient.query<
+  const response = await client.query<
     GetActivitiesByCityQuery,
     GetActivitiesByCityQueryVariables
   >({
@@ -41,10 +39,10 @@ export const getServerSideProps: GetServerSideProps<CityDetailsProps> = async ({
       price: query.price ? Number(query.price) : null,
     },
   });
-  return {
+  return  {
     props: { activities: response.data.getActivitiesByCity, city: params.city },
-  };
-};
+  }
+});
 
 export default function ActivityDetails({
   activities,

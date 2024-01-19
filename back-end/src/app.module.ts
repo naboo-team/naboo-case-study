@@ -11,6 +11,8 @@ import { SeedService } from './seed/seed.service';
 import { UserModule } from './user/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { APP_GUARD } from '@nestjs/core';
+import { AttachUser } from './auth/auth.guard';
 
 @Module({
   imports: [
@@ -37,6 +39,10 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
     SeedModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SeedService],
+  providers: [
+    AppService,
+    SeedService,
+    { provide: APP_GUARD, useClass: AttachUser },
+  ],
 })
 export class AppModule {}

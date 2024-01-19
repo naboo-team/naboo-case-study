@@ -4,8 +4,10 @@
 
 type ActivityDto {
   city: String!
+  createdAt: DateTime
   description: String!
   id: String!
+  isFavorite: Boolean!
   name: String!
   owner: UserDto!
   price: Int!
@@ -18,11 +20,18 @@ input CreateActivityInput {
   price: Int!
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Mutation {
   createActivity(createActivityInput: CreateActivityInput!): ActivityDto!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   register(signUpInput: SignUpInput!): UserDto!
+  setFavorites(setFavoritesInput: setFavoritesInput!): UserDto!
+  toggleFavorite(activityId: String!): ActivityDto!
 }
 
 type Query {
@@ -53,7 +62,12 @@ input SignUpInput {
 
 type UserDto {
   email: String!
+  favorites: [ActivityDto!]!
   firstName: String!
   id: String!
   lastName: String!
+}
+
+input setFavoritesInput {
+  activitiesIds: [String!]!
 }

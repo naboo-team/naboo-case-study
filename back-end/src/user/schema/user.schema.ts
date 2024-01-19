@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, SchemaTypes, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class User extends Document {
@@ -16,7 +16,11 @@ export class User extends Document {
   password!: string;
 
   @Prop()
-  token?: string;
+  token?: string; // ? not sure of this a user can have multiple tokens
+
+  @Prop([{ type: SchemaTypes.ObjectId, ref: 'Activity' }])
+  favorites!: Types.ObjectId[];
+  activities: any;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
