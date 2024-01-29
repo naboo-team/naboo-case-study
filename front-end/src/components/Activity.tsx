@@ -1,5 +1,6 @@
 import { useFavorites } from "@/contexts/favoriteContext";
 import { ActivityFragment } from "@/graphql/generated/types";
+import { useAuth } from "@/hooks";
 import { useGlobalStyles } from "@/utils";
 import { Badge, Button, Card, Grid, Group, Image, Text } from "@mantine/core";
 import { IconHeart } from "@tabler/icons-react";
@@ -12,6 +13,7 @@ interface ActivityProps {
 
 export function Activity({ activity }: ActivityProps) {
   const { favorites, handleToggleFavorite } = useFavorites();
+  const { user } = useAuth();
   const isFavorite =
     Array.isArray(favorites) && favorites.some((fav) => fav.id === activity.id);
 
@@ -26,45 +28,47 @@ export function Activity({ activity }: ActivityProps) {
             height={160}
             alt="random image of city"
           />
-          <Button
-            onClick={() =>
-              handleToggleFavorite(activity.id, {
-                name: activity.name,
-                city: activity.city,
-                description: activity.description,
-                price: activity.price,
-                owner: activity.owner,
-              })
-            }
-            style={{
-              position: "absolute",
-              top: 10,
-              right: 10,
-              background: "none",
-              border: "none",
-              padding: 0,
-            }}
-            aria-label={
-              isFavorite ? "Remove from favorites" : "Add to favorites"
-            }
-          >
-            {isFavorite ? (
-              <IconHeart
-                color="red"
-                size={30}
-                stroke={2}
-                strokeLinejoin="miter"
-                fill="red"
-              />
-            ) : (
-              <IconHeart
-                color="red"
-                size={30}
-                stroke={1.8}
-                strokeLinejoin="miter"
-              />
-            )}
-          </Button>
+          {user && (
+            <Button
+              onClick={() =>
+                handleToggleFavorite(activity.id, {
+                  name: activity.name,
+                  city: activity.city,
+                  description: activity.description,
+                  price: activity.price,
+                  owner: activity.owner,
+                })
+              }
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                background: "none",
+                border: "none",
+                padding: 0,
+              }}
+              aria-label={
+                isFavorite ? "Remove from favorites" : "Add to favorites"
+              }
+            >
+              {isFavorite ? (
+                <IconHeart
+                  color="red"
+                  size={30}
+                  stroke={2}
+                  strokeLinejoin="miter"
+                  fill="red"
+                />
+              ) : (
+                <IconHeart
+                  color="red"
+                  size={30}
+                  stroke={1.8}
+                  strokeLinejoin="miter"
+                />
+              )}
+            </Button>
+          )}
         </Card.Section>
 
         <Group position="apart" mt="md" mb="xs">

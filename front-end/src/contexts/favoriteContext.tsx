@@ -42,11 +42,18 @@ export const FavoritesProvider = ({ children }: FavoriteProviderProps) => {
   const [toggleFavorite] = useMutation(TOGGLE_FAVORITE_MUTATION);
 
   useEffect(() => {
-    if (!loading && !error && data && data.GetUserFavoriteActivities) {
+    if (
+      auth.user &&
+      !loading &&
+      !error &&
+      data &&
+      data.GetUserFavoriteActivities
+    ) {
       setFavorites(data.GetUserFavoriteActivities);
+    } else {
+      setFavorites([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, loading, error]);
+  }, [data, loading, error, auth.user]);
 
   const handleToggleFavorite = async (
     activityId: string,
