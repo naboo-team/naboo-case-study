@@ -11,6 +11,9 @@ import { SeedService } from './seed/seed.service';
 import { UserModule } from './user/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { RoleModule } from './role/role.module';
+import { PermissionModule } from './permission/permission.module';
+import { FavoriteModule } from './favorite/favorite.module';
 
 @Module({
   imports: [
@@ -35,6 +38,9 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
     MeModule,
     ActivityModule,
     SeedModule,
+    RoleModule,
+    PermissionModule,
+    FavoriteModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],

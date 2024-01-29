@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { RoleDto } from 'src/role/types';
 
 @ObjectType()
 export class UserDto {
@@ -13,4 +14,7 @@ export class UserDto {
 
   @Field()
   email!: string;
+
+  @Field(() => RoleDto, { nullable: true })
+  role?: RoleDto;
 }

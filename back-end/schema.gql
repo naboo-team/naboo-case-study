@@ -18,14 +18,35 @@ input CreateActivityInput {
   price: Int!
 }
 
+input CreateFavoriteInput {
+  activityId: String!
+  userId: String!
+}
+
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+  roleName: String
+}
+
 type Mutation {
   createActivity(createActivityInput: CreateActivityInput!): ActivityDto!
+  createUser(createUserInput: CreateUserInput!): UserDto!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   register(signUpInput: SignUpInput!): UserDto!
+  toggleFavorite(createFavoriteInput: CreateFavoriteInput!): Boolean!
+}
+
+type PermissionDto {
+  id: String!
+  name: String!
 }
 
 type Query {
+  GetUserFavoriteActivities(userId: String!): [ActivityDto!]!
   getActivities: [ActivityDto!]!
   getActivitiesByCity(activity: String, city: String!, price: Int): [ActivityDto!]!
   getActivitiesByUser: [ActivityDto!]!
@@ -33,6 +54,19 @@ type Query {
   getCities: [String!]!
   getLatestActivities: [ActivityDto!]!
   getMe: UserDto!
+  getPermissionById(id: String!): PermissionDto!
+  getPermissionByName(name: String!): PermissionDto!
+  getPermissions: [PermissionDto!]!
+  getRoleById(id: String!): RoleDto!
+  getRoleByName(name: String!): RoleDto!
+  getRoles: [RoleDto!]!
+  getUser(id: String!): UserDto!
+  getUsers: [UserDto!]!
+}
+
+type RoleDto {
+  id: String!
+  name: String!
 }
 
 type SignInDto {
@@ -56,4 +90,5 @@ type UserDto {
   firstName: String!
   id: String!
   lastName: String!
+  role: RoleDto
 }

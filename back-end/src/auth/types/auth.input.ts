@@ -23,3 +23,10 @@ export class SignUpInput extends SignInInput {
   @IsNotEmpty()
   lastName!: string;
 }
+
+export class FullSignUpInput extends SignUpInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  roleName!: string;
+}

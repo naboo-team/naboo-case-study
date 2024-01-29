@@ -1,4 +1,5 @@
 import { PageTitle } from "@/components";
+import FavoritesSection from "@/components/FavoritesSection";
 import { withAuth } from "@/hocs";
 import { useAuth } from "@/hooks";
 import { Avatar, Flex, Text } from "@mantine/core";
@@ -23,6 +24,7 @@ const Profile = () => {
           <Text>{user?.lastName}</Text>
         </Flex>
       </Flex>
+      <FavoritesSection />
     </>
   );
 };

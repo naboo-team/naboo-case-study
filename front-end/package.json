@@ -8,7 +8,7 @@
     "start": "next start -p 3001",
     "lint": "next lint",
     "test": "vitest",
-    "generate-types": "cp ../back-end/schema.gql ./src/graphql/schema.gql && graphql-codegen"
+    "generate-types": "copy ../back-end/schema.gql ./src/graphql/schema.gql && graphql-codegen"
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",
@@ -18,7 +18,7 @@
     "@mantine/form": "^6.0.16",
     "@mantine/hooks": "^6.0.16",
     "@mantine/next": "^6.0.16",
-    "@tabler/icons-react": "^2.25.0",
+    "@tabler/icons-react": "^2.46.0",
     "axios": "^1.4.0",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",

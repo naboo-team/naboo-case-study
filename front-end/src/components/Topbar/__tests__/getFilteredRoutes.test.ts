@@ -10,10 +10,11 @@ interface CheckRouteAccessTest {
 }
 
 const user: GetUserQuery["getMe"] = {
-  id: "user1",
-  email: "user1@test.fr",
+  id: "admin1",
+  email: "admin1@test.fr",
   firstName: "john",
   lastName: "doe",
+  role: "admin",
 };
 
 describe("la fonction checkRouteAccess", () => {

@@ -11,7 +11,7 @@ export class ActivityService {
     private activityModel: Model<Activity>,
   ) {}
 
-  async findAll(): Promise<Activity[]> {
+  async getAll(): Promise<Activity[]> {
     return this.activityModel
       .find()
       .sort({ createdAt: -1 })
@@ -28,7 +28,7 @@ export class ActivityService {
       .exec();
   }
 
-  async findByUser(userId: string): Promise<Activity[]> {
+  async getByUser(userId: string): Promise<Activity[]> {
     return this.activityModel
       .find({ owner: userId })
       .sort({ createdAt: -1 })
@@ -36,7 +36,7 @@ export class ActivityService {
       .exec();
   }
 
-  async findOne(id: string): Promise<Activity> {
+  async getById(id: string): Promise<Activity> {
     const activity = await this.activityModel
       .findById(id)
       .populate('owner')

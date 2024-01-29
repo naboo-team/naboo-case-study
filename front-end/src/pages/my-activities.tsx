@@ -1,4 +1,5 @@
 import { Activity, EmptyData, PageTitle } from "@/components";
+import FavoritesSection from "@/components/FavoritesSection";
 import { graphqlClient } from "@/graphql/apollo";
 import {
   GetUserActivitiesQuery,
@@ -54,6 +55,7 @@ const MyActivities = ({ activities }: MyActivitiesProps) => {
           <EmptyData />
         )}
       </Grid>
+      <FavoritesSection />
     </>
   );
 };

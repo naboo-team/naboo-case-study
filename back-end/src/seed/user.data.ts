@@ -1,8 +1,11 @@
-import { SignUpInput } from 'src/auth/types';
+import { CreateUserInput } from 'src/user/types/user.input';
 
-export const user: SignUpInput = {
-  email: 'user1@test.fr',
-  password: 'user1',
-  firstName: 'John',
-  lastName: 'Doe',
-};
+export const users: CreateUserInput[] = [
+  {
+    email: 'user1@test.fr',
+    password: 'user1',
+    firstName: 'John',
+    lastName: 'Doe',
+    roleName: 'admin',
+  },
+];
