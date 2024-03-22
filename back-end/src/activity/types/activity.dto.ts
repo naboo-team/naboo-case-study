@@ -7,6 +7,9 @@ export class ActivityDto {
   id!: string;
 
   @Field()
+  createdAt!: Date;
+
+  @Field()
   name!: string;
 
   @Field()

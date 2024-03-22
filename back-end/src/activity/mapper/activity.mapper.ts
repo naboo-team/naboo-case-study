@@ -12,11 +12,13 @@ export class ActivityMapper implements Mapper<Activity, ActivityDto> {
       city: activity.city,
       description: activity.description,
       price: activity.price,
+      createdAt: activity.createdAt,
       owner: {
         id: activity.owner._id,
         firstName: activity.owner.firstName,
         lastName: activity.owner.lastName,
         email: activity.owner.email,
+        isAdmin: activity.owner.isAdmin ?? false,
         favourites: [],
       },
     };

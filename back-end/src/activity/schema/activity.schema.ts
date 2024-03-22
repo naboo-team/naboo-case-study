@@ -4,6 +4,9 @@ import { User } from '../../user/schema/user.schema';
 
 @Schema({ timestamps: true })
 export class Activity extends Document {
+  @Prop({ required: true, defaultValue: Date.now })
+  createdAt!: Date;
+
   @Prop({ required: true })
   name!: string;
 
