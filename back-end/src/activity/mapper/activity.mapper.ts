@@ -17,6 +17,7 @@ export class ActivityMapper implements Mapper<Activity, ActivityDto> {
         firstName: activity.owner.firstName,
         lastName: activity.owner.lastName,
         email: activity.owner.email,
+        favourites: [],
       },
     };
   }
