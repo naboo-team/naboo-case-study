@@ -1,27 +1,74 @@
-import { PageTitle } from "@/components";
+import {Activity, EmptyData, PageTitle} from "@/components";
 import { withAuth } from "@/hocs";
 import { useAuth } from "@/hooks";
-import { Avatar, Flex, Text } from "@mantine/core";
+import {Avatar, Flex, Grid, Text, Title} from "@mantine/core";
 import Head from "next/head";
+import {useContext} from "react";
+import {UserContext} from "@/contexts/userContext";
+import {GetServerSideProps} from "next";
+import {graphqlClient} from "@/graphql/apollo";
+import {
+  GetActivitiesQuery, GetActivitiesQueryVariables,
+} from "@/graphql/generated/types";
+import GetActivities from "@/graphql/queries/activity/getActivities";
 
-const Profile = () => {
+interface ProfileProps {
+    activities: GetActivitiesQuery["getActivities"];
+}
+
+export const getServerSideProps: GetServerSideProps<
+    ProfileProps
+> = async ({ req }) => {
+  const response = await graphqlClient.query<
+        GetActivitiesQuery,
+        GetActivitiesQueryVariables
+    >({
+      query: GetActivities,
+      context: { headers: { Cookie: req.headers.cookie } },
+    });
+  return { props: { activities: response.data.getActivities } };
+};
+
+const Profile = ({ activities }: ProfileProps) => {
   const { user } = useAuth();
+  const currentUser = useContext(UserContext);
+  const favorites = currentUser?.favorites;
+
+  const favoriteActivities = activities.filter((activity) => {
+    return favorites?.includes(activity.id);
+  });
+
   return (
     <>
       <Head>
         <title>Mon profil | CDTR</title>
       </Head>
       <PageTitle title="Mon profil" />
-      <Flex align="center" gap="md">
-        <Avatar color="cyan" radius="xl" size="lg">
-          {user?.firstName[0]}
-          {user?.lastName[0]}
-        </Avatar>
-        <Flex direction="column">
-          <Text>{user?.email}</Text>
-          <Text>{user?.firstName}</Text>
-          <Text>{user?.lastName}</Text>
+      <Flex direction="column" gap="md">
+        <Flex align="center" gap="md">
+          <Avatar color="cyan" radius="xl" size="lg">
+            {user?.firstName[0]}
+            {user?.lastName[0]}
+          </Avatar>
+          <Flex direction="column">
+            <Text>{user?.email}</Text>
+            <Text>{user?.firstName}</Text>
+            <Text>{user?.lastName}</Text>
+          </Flex>
         </Flex>
+        <Title order={4}>
+            Mes activités favorites
+        </Title>
+        <Grid>
+          {activities.length > 0 ? (
+            favoriteActivities.map((activity) => (
+              <Activity activity={activity} key={activity.id} />
+            ))
+          ) : (
+            <EmptyData />
+          )}
+        </Grid>
+
       </Flex>
     </>
   );
