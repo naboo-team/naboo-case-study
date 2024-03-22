@@ -18,7 +18,7 @@ export function Activity({ activity }: ActivityProps) {
   const user = useContext(UserContext);
   const isLogged = useContext(AuthContext);
 
-  const isFavorite = user.favorites.includes(activity.id) ? "red" : "white";
+  const isFavorite = user.favourites.includes(activity.id) ? "red" : "white";
 
   return (
     <Grid.Col span={4}>

@@ -32,10 +32,12 @@ export const getServerSideProps: GetServerSideProps<
 const Profile = ({ activities }: ProfileProps) => {
   const { user } = useAuth();
   const currentUser = useContext(UserContext);
-  const favorites = currentUser?.favorites;
+  const favourites = currentUser?.favourites;
 
-  const favoriteActivities = activities.filter((activity) => {
-    return favorites?.includes(activity.id);
+
+
+  const favouriteActivities = activities.filter((activity) => {
+    return favourites?.includes(activity.id);
   });
 
   return (
@@ -61,7 +63,7 @@ const Profile = ({ activities }: ProfileProps) => {
         </Title>
         <Grid>
           {activities.length > 0 ? (
-            favoriteActivities.map((activity) => (
+            favouriteActivities.map((activity) => (
               <Activity activity={activity} key={activity.id} />
             ))
           ) : (
