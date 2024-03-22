@@ -121,12 +121,26 @@ export type ActivityFragment = { __typename?: 'ActivityDto', id: string, city: s
 
 export type OwnerFragment = { __typename?: 'UserDto', firstName: string, lastName: string };
 
+export type AddFavoriteMutationVariables = Exact<{
+  activityId: Scalars['String']['input'];
+}>;
+
+
+export type AddFavoriteMutation = { __typename?: 'Mutation', addFavorite: { __typename?: 'UserDto', email: string, firstName: string, lastName: string, id: string } };
+
 export type CreateActivityMutationVariables = Exact<{
   createActivityInput: CreateActivityInput;
 }>;
 
 
 export type CreateActivityMutation = { __typename?: 'Mutation', createActivity: { __typename?: 'ActivityDto', id: string, city: string, description: string, name: string, price: number, owner: { __typename?: 'UserDto', firstName: string, lastName: string } } };
+
+export type RemoveFavoriteMutationVariables = Exact<{
+  activityId: Scalars['String']['input'];
+}>;
+
+
+export type RemoveFavoriteMutation = { __typename?: 'Mutation', removeFavorite: { __typename?: 'UserDto', email: string, firstName: string, lastName: string, id: string } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -181,7 +195,7 @@ export type GetUserActivitiesQuery = { __typename?: 'Query', getActivitiesByUser
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getMe: { __typename?: 'UserDto', id: string, firstName: string, lastName: string, email: string } };
+export type GetUserQuery = { __typename?: 'Query', getMe: { __typename?: 'UserDto', id: string, firstName: string, lastName: string, email: string, favourites: Array<string> } };
 
 export type GetCitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
