@@ -24,6 +24,9 @@ export class User extends Document {
     default: [],
   })
   favourites?: string[];
+
+  @Prop()
+  isAdmin?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

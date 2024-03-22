@@ -16,4 +16,7 @@ export class UserDto {
 
   @Field((type) => [String])
   favourites!: string[];
+
+  @Field({ defaultValue: false })
+  isAdmin!: boolean;
 }

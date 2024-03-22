@@ -14,6 +14,7 @@ export class UserMapper implements Mapper<User, UserDto> {
       lastName: user.lastName,
       email: user.email,
       favourites: user.favourites ?? [],
+      isAdmin: user.isAdmin ?? false,
     };
   }
 }
