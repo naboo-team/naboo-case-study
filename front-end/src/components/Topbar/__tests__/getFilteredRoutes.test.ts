@@ -15,6 +15,7 @@ const user: GetUserQuery["getMe"] = {
   firstName: "john",
   lastName: "doe",
   favourites: [],
+  isAdmin: false,
 };
 
 describe("la fonction checkRouteAccess", () => {
