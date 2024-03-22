@@ -5,4 +5,13 @@ export const user: SignUpInput = {
   password: 'user1',
   firstName: 'John',
   lastName: 'Doe',
+  isAdmin: false,
+};
+
+export const admin: SignUpInput = {
+  email: 'admin1@test.fr',
+  password: 'admin1',
+  firstName: 'John',
+  lastName: 'Doe',
+  isAdmin: true,
 };
