@@ -8,6 +8,7 @@ const GetUser = gql`
       lastName
       email
       favourites
+      isAdmin
     }
   }
 `;
