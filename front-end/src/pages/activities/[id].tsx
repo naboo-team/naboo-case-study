@@ -11,6 +11,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 import { AddToFavourites } from "@/components/Buttons/AddToFavourites";
+import { CreatedDate } from "@/components/Admin/CreatedDate";
 
 interface ActivityDetailsProps {
   activity: GetActivityQuery["getActivity"];
@@ -64,9 +65,7 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
             <Text size="sm" color="dimmed">
               Ajouté par {activity.owner.firstName} {activity.owner.lastName}
             </Text>
-            <Text size="sm" color="dimmed">
-              Créé le { new Date(activity.createdAt).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }) }
-            </Text>
+            <CreatedDate date={activity.createdAt} />
             <AddToFavourites activityId={activity.id} />
           </Flex>
         </Grid.Col>
