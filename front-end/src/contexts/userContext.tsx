@@ -1,22 +1,24 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { AuthContext } from './authContext';
 import { useMutation } from '@apollo/client';
-import AddToFavorites from '@/graphql/mutations/activity/addToFavorites';
+import AddToFavourites from '@/graphql/mutations/activity/addToFavourites';
 import RemoveFromFavourites from '@/graphql/mutations/activity/removeFromFavourites';
 import {useSnackbar} from "@/hooks";
 
 interface UserContextType {
-  favorites: string[];
-  updateFavorites: (favorites: string[]) => void;
-  addFavorite: (favoriteId: string) => void;
-  removeFavorite: (favoriteId: string) => void;
+  isAdmin?: boolean;
+  favourites: string[];
+  updateFavourites: (favorites: string[]) => void;
+  addFavourite: (favoriteId: string) => void;
+  removeFavourite: (favoriteId: string) => void;
 }
 
 export const UserContext = createContext<UserContextType>({
-  favorites: [],
-  updateFavorites: () => {},
-  addFavorite: () => {},
-  removeFavorite: () => {},
+  isAdmin: false,
+  favourites: [],
+  updateFavourites: () => {},
+  addFavourite: () => {},
+  removeFavourite: () => {},
 });
 
 interface UserProviderProps {
@@ -24,36 +26,36 @@ interface UserProviderProps {
 }
 
 export const UserProvider = ({ children }: UserProviderProps) => {
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favourites, setFavourites] = useState<string[]>([]);
   const { user } = useContext(AuthContext);
   const snackbar = useSnackbar();
-  const [addFavoriteMutation] = useMutation(AddToFavorites);
-  const [removeFavoriteMutation] = useMutation(RemoveFromFavourites);
+  const [addFavouriteMutation] = useMutation(AddToFavourites);
+  const [removeFavouriteMutation] = useMutation(RemoveFromFavourites);
 
   useEffect(() => {
-    if (user && user.favorites) {
-      setFavorites(user.favorites);
+    if (user && user.favourites) {
+      setFavourites(user.favourites);
     }
   }, [user]);
 
-  const updateFavorites = (newFavorites: string[]) => {
-    setFavorites(newFavorites);
+  const updateFavourites = (newFavourites: string[]) => {
+    setFavourites(newFavourites);
   };
 
-  const addFavorite = async (favoriteId: string) => {
+  const addFavourite = async (favouriteId: string) => {
     try {
-      await addFavoriteMutation({ variables: { activityId: favoriteId } });
-      updateFavorites([...favorites, favoriteId]);
+      await addFavouriteMutation({ variables: { activityId: favouriteId } });
+      updateFavourites([...favourites, favouriteId]);
       snackbar.success('Activité ajoutée aux favoris');
     } catch (err) {
       console.error(err);
     }
   };
 
-  const removeFavorite = async (favoriteId: string) => {
+  const removeFavourite = async (favouriteId: string) => {
     try {
-      await removeFavoriteMutation({ variables: { activityId: favoriteId } });
-      updateFavorites(favorites.filter(id => id !== favoriteId));
+      await removeFavouriteMutation({ variables: { activityId: favouriteId } });
+      updateFavourites(favourites.filter(id => id !== favouriteId));
       snackbar.success('Activité retirée des favoris');
 
     } catch (err) {
@@ -62,7 +64,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   };
 
   return (
-    <UserContext.Provider value={{ favorites, updateFavorites, addFavorite, removeFavorite }}>
+    <UserContext.Provider value={{ favourites, updateFavourites, addFavourite, removeFavourite }}>
       {children}
     </UserContext.Provider>
   );

@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-const addToFavorites = gql`
+const addToFavourites = gql`
     mutation AddFavorite($activityId: String!) {
         addFavorite(activityId: $activityId) {
             email,
@@ -11,4 +11,4 @@ const addToFavorites = gql`
     }
 `;
 
-export default addToFavorites;
+export default addToFavourites;

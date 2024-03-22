@@ -13,12 +13,12 @@ export const useHandleAddFavourite = (activityId: string) => {
       router.push("/signup");
       return;
     }
-    if (user.favorites.includes(activityId)) {
-      user.removeFavorite( activityId);
-      user.updateFavorites(user.favorites.filter((fav) => fav !== activityId));
+    if (user.favourites.includes(activityId)) {
+      user.removeFavourite( activityId);
+      user.updateFavourites(user.favourites.filter((fav) => fav !== activityId));
     } else {
-      user.addFavorite( activityId);
-      user.updateFavorites([...user.favorites, activityId]);
+      user.addFavourite( activityId);
+      user.updateFavourites([...user.favourites, activityId]);
     }
   }
 
