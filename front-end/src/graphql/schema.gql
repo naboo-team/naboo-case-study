@@ -19,10 +19,12 @@ input CreateActivityInput {
 }
 
 type Mutation {
+  addFavorite(activityId: String!): UserDto!
   createActivity(createActivityInput: CreateActivityInput!): ActivityDto!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   register(signUpInput: SignUpInput!): UserDto!
+  removeFavorite(activityId: String!): UserDto!
 }
 
 type Query {
@@ -53,6 +55,7 @@ input SignUpInput {
 
 type UserDto {
   email: String!
+  favourites: [String!]!
   firstName: String!
   id: String!
   lastName: String!
