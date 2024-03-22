@@ -35,10 +35,17 @@ export type CreateActivityInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addFavorite: UserDto;
   createActivity: ActivityDto;
   login: SignInDto;
   logout: Scalars['Boolean']['output'];
   register: UserDto;
+  removeFavorite: UserDto;
+};
+
+
+export type MutationAddFavoriteArgs = {
+  activityId: Scalars['String']['input'];
 };
 
 
@@ -54,6 +61,11 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   signUpInput: SignUpInput;
+};
+
+
+export type MutationRemoveFavoriteArgs = {
+  activityId: Scalars['String']['input'];
 };
 
 export type Query = {
@@ -99,6 +111,7 @@ export type SignUpInput = {
 export type UserDto = {
   __typename?: 'UserDto';
   email: Scalars['String']['output'];
+  favourites: Array<Scalars['String']['output']>;
   firstName: Scalars['String']['output'];
   id: Scalars['String']['output'];
   lastName: Scalars['String']['output'];
@@ -285,10 +298,12 @@ export type ActivityDtoResolvers<ContextType = any, ParentType extends Resolvers
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addFavorite?: Resolver<ResolversTypes['UserDto'], ParentType, ContextType, RequireFields<MutationAddFavoriteArgs, 'activityId'>>;
   createActivity?: Resolver<ResolversTypes['ActivityDto'], ParentType, ContextType, RequireFields<MutationCreateActivityArgs, 'createActivityInput'>>;
   login?: Resolver<ResolversTypes['SignInDto'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'signInInput'>>;
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   register?: Resolver<ResolversTypes['UserDto'], ParentType, ContextType, RequireFields<MutationRegisterArgs, 'signUpInput'>>;
+  removeFavorite?: Resolver<ResolversTypes['UserDto'], ParentType, ContextType, RequireFields<MutationRemoveFavoriteArgs, 'activityId'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -308,6 +323,7 @@ export type SignInDtoResolvers<ContextType = any, ParentType extends ResolversPa
 
 export type UserDtoResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserDto'] = ResolversParentTypes['UserDto']> = {
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  favourites?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
