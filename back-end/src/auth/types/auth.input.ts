@@ -10,6 +10,9 @@ export class SignInInput {
   @Field()
   @IsNotEmpty()
   password!: string;
+
+  @Field({ nullable: true })
+  isAdmin?: boolean;
 }
 @InputType()
 export class SignUpInput extends SignInInput {

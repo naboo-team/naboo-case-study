@@ -30,6 +30,7 @@ export class AuthService {
       firstName: user.firstName,
       lastName: user.lastName,
       favourites: user.favourites ?? [],
+      isAdmin: user.isAdmin ?? false,
     };
     const token = await this.jwtService.signAsync(payload);
 
