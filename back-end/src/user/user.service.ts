@@ -49,4 +49,27 @@ export class UserService {
   async countDocuments(): Promise<number> {
     return this.userModel.countDocuments().exec();
   }
+
+  async addFavorite(userId: string, activityId: string): Promise<User> {
+    const user = await this.getById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (!user.favourites?.includes(activityId)) {
+      user.favourites?.push(activityId);
+      await user.save();
+    }
+    return user;
+  }
+
+  async removeFavorite(userId: string, activityId: string): Promise<User> {
+    const user = await this.getById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    user.favourites = user.favourites?.filter((id) => id !== activityId);
+    console.log(user, activityId);
+    await user.save();
+    return user;
+  }
 }

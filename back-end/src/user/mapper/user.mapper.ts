@@ -13,6 +13,7 @@ export class UserMapper implements Mapper<User, UserDto> {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      favourites: user.favourites ?? [],
     };
   }
 }

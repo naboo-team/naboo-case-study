@@ -13,4 +13,7 @@ export class UserDto {
 
   @Field()
   email!: string;
+
+  @Field((type) => [String])
+  favourites!: string[];
 }
