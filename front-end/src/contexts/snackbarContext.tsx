@@ -1,5 +1,5 @@
 import { Notification } from "@mantine/core";
-import { IconX } from "@tabler/icons-react";
+import {IconCheck, IconX} from "@tabler/icons-react";
 import { createContext, useEffect, useState } from "react";
 
 interface SnackbarContextType {
@@ -46,7 +46,7 @@ export const SnackbarProvider = ({
       {children}
       {snackbar && (
         <Notification
-          icon={<IconX size="1.1rem" />}
+          icon={snackbar.type === "error" ? <IconX size="1.1rem" /> : <IconCheck size="1.1rem" />}
           color={snackbar.type === "error" ? "red" : "green"}
           style={{ position: "fixed", right: 10, bottom: 10, zIndex: 999 }}
         >
