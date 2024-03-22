@@ -2,11 +2,11 @@ import { ActivityFragment } from "@/graphql/generated/types";
 import { useGlobalStyles } from "@/utils";
 import { Badge, Button, Card, Grid, Group, Image, Text } from "@mantine/core";
 import Link from "next/link";
-import {useHandleAddFavourite} from "@/hooks/useHandleAddFavourite";
-import {UserContext} from "@/contexts/userContext";
-import {useContext} from "react";
-import {AuthContext} from "@/contexts";
-import {IconHeart} from "@tabler/icons-react";
+import { useHandleAddFavourite } from "@/hooks/useHandleAddFavourite";
+import { UserContext } from "@/contexts/userContext";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts";
+import { IconHeart } from "@tabler/icons-react";
 
 interface ActivityProps {
   activity: ActivityFragment;
@@ -27,7 +27,7 @@ export function Activity({ activity }: ActivityProps) {
           {isLogged.user &&
             <IconHeart
               className={classes.heartIcon}
-              style={{fill: isFavorite}}
+              style={{ fill: isFavorite }}
               onClick={handleAddFavourite}
             />
           }

@@ -3,7 +3,7 @@ import { AuthContext } from './authContext';
 import { useMutation } from '@apollo/client';
 import AddToFavourites from '@/graphql/mutations/activity/addToFavourites';
 import RemoveFromFavourites from '@/graphql/mutations/activity/removeFromFavourites';
-import {useSnackbar} from "@/hooks";
+import { useSnackbar } from "@/hooks";
 
 interface UserContextType {
   isAdmin?: boolean;

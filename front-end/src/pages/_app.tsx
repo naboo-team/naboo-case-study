@@ -6,7 +6,7 @@ import { mantineTheme } from "@/utils";
 import { ApolloProvider } from "@apollo/client";
 import { Container, MantineProvider } from "@mantine/core";
 import type { AppProps } from "next/app";
-import {UserProvider} from "@/contexts/userContext";
+import { UserProvider } from "@/contexts/userContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

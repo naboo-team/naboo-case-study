@@ -5,12 +5,12 @@ import {
   GetActivityQueryVariables
 } from "@/graphql/generated/types";
 import GetActivity from "@/graphql/queries/activity/getActivity";
-import {Badge, Flex, Grid, Group, Image, Text} from "@mantine/core";
+import { Badge, Flex, Grid, Group, Image, Text } from "@mantine/core";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
-import {AddToFavourites} from "@/components/Buttons/AddToFavourites";
+import { AddToFavourites } from "@/components/Buttons/AddToFavourites";
 
 interface ActivityDetailsProps {
   activity: GetActivityQuery["getActivity"];

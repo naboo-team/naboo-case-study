@@ -1,5 +1,5 @@
 import { Notification } from "@mantine/core";
-import {IconCheck, IconX} from "@tabler/icons-react";
+import { IconCheck, IconX } from "@tabler/icons-react";
 import { createContext, useEffect, useState } from "react";
 
 interface SnackbarContextType {

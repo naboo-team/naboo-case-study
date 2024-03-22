@@ -1,12 +1,12 @@
-import {Activity, EmptyData, PageTitle} from "@/components";
+import { Activity, EmptyData, PageTitle } from "@/components";
 import { withAuth } from "@/hocs";
 import { useAuth } from "@/hooks";
-import {Avatar, Flex, Grid, Text, Title} from "@mantine/core";
+import { Avatar, Flex, Grid, Text, Title } from "@mantine/core";
 import Head from "next/head";
-import {useContext} from "react";
-import {UserContext} from "@/contexts/userContext";
-import {GetServerSideProps} from "next";
-import {graphqlClient} from "@/graphql/apollo";
+import { useContext } from "react";
+import { UserContext } from "@/contexts/userContext";
+import { GetServerSideProps } from "next";
+import { graphqlClient } from "@/graphql/apollo";
 import {
   GetActivitiesQuery, GetActivitiesQueryVariables,
 } from "@/graphql/generated/types";
