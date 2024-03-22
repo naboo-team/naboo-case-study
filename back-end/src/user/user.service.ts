@@ -68,7 +68,6 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
     user.favourites = user.favourites?.filter((id) => id !== activityId);
-    console.log(user, activityId);
     await user.save();
     return user;
   }
