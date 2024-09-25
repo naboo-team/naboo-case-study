@@ -15,7 +15,7 @@ export function Activity({ activity }: ActivityProps) {
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Card.Section>
           <Image
-            src="https://source.unsplash.com/random/?city"
+            src="https://dummyimage.com/480x4:3"
             height={160}
             alt="random image of city"
           />

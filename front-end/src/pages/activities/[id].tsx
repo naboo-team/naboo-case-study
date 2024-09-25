@@ -3,21 +3,12 @@ import { graphqlClient } from "@/graphql/apollo";
 import {
   GetActivityQuery,
   GetActivityQueryVariables,
-  MarkActivityAsFavoriteMutation,
-  MarkActivityAsFavoriteMutationVariables,
-  UnmarkActivityAsFavoriteMutation,
-  UnmarkActivityAsFavoriteMutationVariables,
 } from "@/graphql/generated/types";
-import MarkActivityAsFavorite from "@/graphql/mutations/activity/markActivityAsFavorite";
-import UnmarkActivityAsFavorite from "@/graphql/mutations/activity/unmarkActivityAsFavorite";
 import GetActivity from "@/graphql/queries/activity/getActivity";
-import { useAuth } from "@/hooks/useAuth";
-import { useMutation } from "@apollo/client";
-import { Badge, Button, Flex, Grid, Group, Image, Text } from "@mantine/core";
+import { Badge, Flex, Grid, Group, Image, Text } from "@mantine/core";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
 
 interface ActivityDetailsProps {
   activity: GetActivityQuery["getActivity"];
@@ -40,49 +31,6 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function ActivityDetails({ activity }: ActivityDetailsProps) {
   const router = useRouter();
-  const auth = useAuth();
-
-  const [markActivityAsFavorite] = useMutation<
-    MarkActivityAsFavoriteMutation,
-    MarkActivityAsFavoriteMutationVariables
-  >(MarkActivityAsFavorite);
-
-  const markAsFavorite = useCallback(() => {
-    markActivityAsFavorite({
-      variables: {
-        markActivityAsFavoriteInput: {
-          activityId: activity.id,
-        },
-      },
-    })
-      .then(() => {
-        router.push("/profil");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [activity.id, markActivityAsFavorite, router]);
-
-  const [unmarkActivityAsFavorite] = useMutation<
-    UnmarkActivityAsFavoriteMutation,
-    UnmarkActivityAsFavoriteMutationVariables
-  >(UnmarkActivityAsFavorite);
-
-  const unmarkAsFavorite = useCallback(() => {
-    unmarkActivityAsFavorite({
-      variables: {
-        unmarkActivityAsFavoriteInput: {
-          activityId: activity.id,
-        },
-      },
-    })
-      .then(() => {
-        router.push("/profil");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [activity.id, unmarkActivityAsFavorite, router]);
 
   return (
     <>
@@ -93,7 +41,7 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
       <Grid>
         <Grid.Col span={7}>
           <Image
-            src="https://source.unsplash.com/random/?city"
+            src="https://dummyimage.com/640x4:3"
             radius="md"
             alt="random image of city"
             width="100%"
@@ -102,12 +50,6 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
         </Grid.Col>
         <Grid.Col span={5}>
           <Flex direction="column" gap="md">
-            {Boolean(auth.user) && activity.isFavorited && (
-              <Button onClick={unmarkAsFavorite}>Unfavorite</Button>
-            )}
-            {Boolean(auth.user) && !activity.isFavorited && (
-              <Button onClick={markAsFavorite}>Favorite</Button>
-            )}
             <Group mt="md" mb="xs">
               <Badge color="pink" variant="light">
                 {activity.city}

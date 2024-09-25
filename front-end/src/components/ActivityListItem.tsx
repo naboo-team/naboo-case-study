@@ -14,7 +14,7 @@ export function ActivityListItem({ activity }: ActivityListItemProps) {
     <Flex align="center" justify="space-between">
       <Flex gap="md" align="center">
         <Image
-          src="https://source.unsplash.com/random/?city"
+          src="https://dummyimage.com/125"
           radius="md"
           alt="random image of city"
           height="125"

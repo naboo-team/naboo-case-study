@@ -20,7 +20,7 @@ export function City({ city }: CityProps) {
       >
         <Card.Section>
           <Image
-            src="https://source.unsplash.com/random/?city"
+            src="https://dummyimage.com/480x4:3"
             height={160}
             alt="random image of city"
           />
