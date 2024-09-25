@@ -7,7 +7,6 @@ type Activity {
   createdAt: DateTime
   description: String!
   id: ID!
-  isFavorited: Boolean!
   name: String!
   owner: User!
   price: Int!
@@ -25,18 +24,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-input MarkActivityAsFavoriteInput {
-  activityId: String!
-}
-
 type Mutation {
   createActivity(createActivityInput: CreateActivityInput!): Activity!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
-  markActivityAsFavorite(markActivityAsFavoriteInput: MarkActivityAsFavoriteInput!): Activity!
   register(signUpInput: SignUpInput!): User!
-  setDebugMode(setDebugModeInput: SetDebugModeInput!): User!
-  unmarkActivityAsFavorite(unmarkActivityAsFavoriteInput: UnmarkActivityAsFavoriteInput!): Activity!
 }
 
 type Query {
@@ -47,10 +39,6 @@ type Query {
   getCities: [String!]!
   getLatestActivities: [Activity!]!
   getMe: User!
-}
-
-input SetDebugModeInput {
-  enabled: Boolean!
 }
 
 type SignInDto {
@@ -69,21 +57,10 @@ input SignUpInput {
   password: String!
 }
 
-input UnmarkActivityAsFavoriteInput {
-  activityId: String!
-}
-
 type User {
-  debugModeEnabled: Boolean!
   email: String!
-  favoriteActivities: [Activity!]!
   firstName: String!
   id: ID!
   lastName: String!
   password: String!
-  permissions: UserPermissions!
-}
-
-type UserPermissions {
-  canEnableDebugMode: Boolean!
 }

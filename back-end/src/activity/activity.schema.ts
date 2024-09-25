@@ -33,9 +33,6 @@ export class Activity extends Document {
   })
   owner!: User;
 
-  @Field(() => Boolean)
-  isFavorited!: boolean;
-
   @Field(() => Date, { nullable: true })
   createdAt!: Date;
 }

@@ -2,21 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { UserModule } from './user.module';
 import { randomUUID } from 'crypto';
-import { ActivityService } from 'src/activity/activity.service';
-import { ActivityModule } from 'src/activity/activity.module';
 import { TestModule, closeInMongodConnection } from 'src/test/test.module';
 
 describe('UserService', () => {
   let userService: UserService;
-  let activityService: ActivityService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule, UserModule, ActivityModule],
+      imports: [TestModule, UserModule],
     }).compile();
 
     userService = module.get<UserService>(UserService);
-    activityService = module.get<ActivityService>(ActivityService);
   });
 
   afterAll(async () => {
@@ -42,162 +38,6 @@ describe('UserService', () => {
       email,
       firstName: 'firstName',
       lastName: 'lastName',
-    });
-  });
-
-  it('allows to add/remove favorite activity', async () => {
-    const email = randomUUID() + '@test.com';
-    const user = await userService.createUser({
-      email,
-      password: 'password',
-      firstName: 'firstName',
-      lastName: 'lastName',
-    });
-
-    const activities = await Promise.all([
-      activityService.create(user.id, {
-        name: 'Test name 1',
-        city: 'Test city 1',
-        description: 'Test description 1',
-        price: 10,
-      }),
-      activityService.create(user.id, {
-        name: 'Test name 2',
-        city: 'Test city 2',
-        description: 'Test description 2',
-        price: 10,
-      }),
-      activityService.create(user.id, {
-        name: 'Test name 3',
-        city: 'Test city 3',
-        description: 'Test description 3',
-        price: 10,
-      }),
-    ]);
-
-    const activityIds = activities.map((activity) => activity.id);
-
-    await userService.addFavoriteActivity({
-      userId: user.id,
-      activityId: activityIds[0],
-    });
-
-    await userService.addFavoriteActivity({
-      userId: user.id,
-      activityId: activityIds[1],
-    });
-
-    const result = await userService.addFavoriteActivity({
-      userId: user.id,
-      activityId: activityIds[2],
-    });
-
-    const favoritedActivityIds = result.favoriteActivities.map((activity) =>
-      activity._id.toString(),
-    );
-    expect(favoritedActivityIds).toMatchObject([
-      activityIds[0],
-      activityIds[1],
-      activityIds[2],
-    ]);
-  });
-
-  it('prevents favoriting the same activity twice', async () => {
-    const email = randomUUID() + '@test.com';
-    const user = await userService.createUser({
-      email,
-      password: 'password',
-      firstName: 'firstName',
-      lastName: 'lastName',
-    });
-
-    const activity = await activityService.create(user.id, {
-      name: 'Test name 1',
-      city: 'Test city 1',
-      description: 'Test description 1',
-      price: 10,
-    });
-
-    await userService.addFavoriteActivity({
-      userId: user.id,
-      activityId: activity.id,
-    });
-
-    await expect(
-      userService.addFavoriteActivity({
-        userId: user.id,
-        activityId: activity.id,
-      }),
-    ).rejects.toThrowError('Activity already favorited');
-  });
-
-  it('hasUserFavoritedActivity returns if specified user favorited specified activity', async () => {
-    const email = randomUUID() + '@test.com';
-    const user = await userService.createUser({
-      email,
-      password: 'password',
-      firstName: 'firstName',
-      lastName: 'lastName',
-    });
-
-    const activity = await activityService.create(user.id, {
-      name: 'Test name 1',
-      city: 'Test city 1',
-      description: 'Test description 1',
-      price: 10,
-    });
-
-    await expect(
-      userService.hasUserFavoritedActivity({
-        activityId: activity.id,
-        userId: user.id,
-      }),
-    ).resolves.toBeFalsy();
-
-    await userService.addFavoriteActivity({
-      userId: user.id,
-      activityId: activity.id,
-    });
-
-    await expect(
-      userService.hasUserFavoritedActivity({
-        activityId: activity.id,
-        userId: user.id,
-      }),
-    ).resolves.toBeTruthy();
-  });
-
-  it('user.permissions', async () => {
-    const user = await userService.createUser({
-      email: randomUUID() + '@test.com',
-      password: 'password',
-      firstName: 'firstName',
-      lastName: 'lastName',
-      role: 'user',
-    });
-
-    const admin = await userService.createUser({
-      email: randomUUID() + '@test.com',
-      password: 'password',
-      firstName: 'firstName',
-      lastName: 'lastName',
-      role: 'admin',
-    });
-
-    await expect(
-      userService.getUserPermissions({
-        userId: user.id,
-      }),
-    ).resolves.toEqual({
-      canEnableDebugMode: false,
-    });
-
-    await expect(
-      userService.getUserPermissions({
-        userId: admin.id,
-      }),
-    ).resolves.toEqual({
-      canEnableDebugMode: true,
     });
   });
 });

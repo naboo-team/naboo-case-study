@@ -1,17 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import { Document } from 'mongoose';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Activity } from 'src/activity/activity.schema';
-import { UserPermissions } from './user.permissions.schema';
 
 @ObjectType()
 @Schema({ timestamps: true })
 export class User extends Document {
-  constructor() {
-    super();
-    this.favoriteActivities = [];
-  }
-
   @Field(() => ID)
   id!: string;
 
@@ -36,17 +29,6 @@ export class User extends Document {
 
   @Prop()
   token?: string;
-
-  @Field(() => [Activity])
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Activity' }] })
-  favoriteActivities: Activity[];
-
-  @Field(() => UserPermissions)
-  permissions!: UserPermissions;
-
-  @Field(() => Boolean)
-  @Prop({ default: false })
-  debugModeEnabled!: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
