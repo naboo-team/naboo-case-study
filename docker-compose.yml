@@ -6,6 +6,49 @@ services:
       - "27017:27017"
     volumes:
       - naboo_mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./back-end
+    container_name: naboo-backend
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/naboo
+      JWT_SECRET: jwt_secret
+      JWT_EXPIRATION_TIME: "999999999"
+      FRONTEND_DOMAIN: localhost
+      FRONTEND_URL: http://localhost:3001
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./back-end:/app
+      - backend_node_modules:/app/node_modules
+
+  frontend:
+    build:
+      context: ./front-end
+    container_name: naboo-frontend
+    ports:
+      - "3001:3001"
+    environment:
+      NEXT_PUBLIC_GRAPHQL_URL: http://localhost:3000/graphql
+      GRAPHQL_SSR_URL: http://backend:3000/graphql
+      NEXT_PUBLIC_API_URL: http://localhost:3000/api
+      API_SSR_URL: http://backend:3000/api
+    depends_on:
+      - backend
+    volumes:
+      - ./front-end:/app
+      - frontend_node_modules:/app/node_modules
 
 volumes:
   naboo_mongo_data:
+  backend_node_modules:
+  frontend_node_modules:
